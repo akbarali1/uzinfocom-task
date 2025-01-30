@@ -1,0 +1,53 @@
+services:
+    app:
+        build:
+            args:
+                user: uzinfocom_task
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        image: uzinfocom_task_app
+        container_name: uzinfocom_task_app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ../src:/var/www
+            - ./supervisor/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+            - ./php:/etc/php-custom.d/
+            - ./php-fpm:/etc/php-fpm-custom.d/
+        networks:
+            - uzinfocom_task_network
+
+    nginx:
+        image: nginx:alpine
+        container_name: uzinfocom_task_nginx
+        restart: unless-stopped
+        ports:
+            - 8005:80
+        volumes:
+            - ../src:/var/www
+            - ./nginx:/etc/nginx/conf.d/
+            - ./logs:/var/log/nginx
+        networks:
+            - uzinfocom_task_network
+
+    redis:
+        image: "redis:alpine"
+        container_name: uzinfocom_task_redis
+        restart: always
+        privileged: true
+        volumes:
+            - redisdata:/data
+            - ../redis.conf:/usr/local/etc/redis/redis.conf
+            - ../logs/redis.log:/var/log/redis/redis-server.log
+        command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+        networks:
+            - uzinfocom_task_network
+
+volumes:
+    redisdata:
+        driver: "local"
+
+networks:
+    uzinfocom_task_network:
+        driver: bridge
