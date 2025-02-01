@@ -6,10 +6,10 @@ namespace App\Http\Controllers;
 use Akbarali\ActionData\ActionDataException;
 use Akbarali\ViewModel\EmptyData;
 use Akbarali\ViewModel\PaginationViewModel;
-use App\ActionData\StoreUserActionData;
-use App\Exceptions\UserException;
-use App\Services\UserService;
-use App\ViewModels\UserViewModel;
+use App\ActionData\StoreDocumentActionData;
+use App\Exceptions\DocumentException;
+use App\Services\DocumentService;
+use App\ViewModels\DocumentViewModel;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,19 +17,19 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Created by PhpStorm.
- * Filename: UserController.php
+ * Filename: DocumentController.php
  * Project Name: uzinfocom-task
  * Author: akbarali
  * Date: 01/02/2025
- * Time: 17:29
+ * Time: 21:55
  * GitHub: https://github.com/akbarali1
  * Telegram: @akbar_aka
  * E-mail: me@akbarali.uz
  */
-final class UserController extends Controller
+final class DocumentController extends Controller
 {
 	public function __construct(
-		protected UserService $service
+		protected DocumentService $service
 	) {}
 	
 	/**
@@ -41,7 +41,7 @@ final class UserController extends Controller
 		$filters        = collect();
 		$dataCollection = $this->service->paginate((int) $request->get('page', 1), 25, $filters);
 		
-		return new PaginationViewModel($dataCollection, UserViewModel::class)->toView('user.index');
+		return new PaginationViewModel($dataCollection, DocumentViewModel::class)->toView('document.index');
 	}
 	
 	/**
@@ -49,42 +49,34 @@ final class UserController extends Controller
 	 */
 	public function create(): View
 	{
-		$viewModel = UserViewModel::fromDataObject(EmptyData::fromArray([]));
-		$roles     = $this->service->getRoles();
-		$viewModel->setRolesList($roles);
-		
-		return $viewModel->toView('user.store');
+		return DocumentViewModel::fromDataObject(EmptyData::fromArray([]))->toView('document.store');
 	}
 	
 	/**
 	 * @param  Request  $request
 	 * @throws ActionDataException
-	 * @throws UserException
 	 * @throws ValidationException
 	 * @return RedirectResponse
 	 */
 	public function store(Request $request): RedirectResponse
 	{
 		$request->request->set('user_id', $request->user()->id);
-		$this->service->store(StoreUserActionData::fromRequest($request));
+		$this->service->store(StoreDocumentActionData::fromRequest($request));
 		
-		return to_route('user.index')->with('message', trans('all.saved'));
+		return to_route('document.index')->with('message', trans('all.saved'));
 	}
 	
 	/**
 	 * @param  int  $id
-	 * @throws UserException
+	 * @throws DocumentException
 	 * @return View|RedirectResponse
 	 */
 	public function edit(int $id): View|RedirectResponse
 	{
-		$userData  = $this->service->getUser($id);
-		$viewModel = UserViewModel::fromDataObject($userData);
+		$userData  = $this->service->getDocument($id);
+		$viewModel = DocumentViewModel::fromDataObject($userData);
 		
-		$roles = $this->service->getRoles();
-		$viewModel->setRolesList($roles);
-		
-		return $viewModel->toView('user.store');
+		return $viewModel->toView('document.store');
 	}
 	
 	/**
@@ -92,7 +84,6 @@ final class UserController extends Controller
 	 * @param  Request  $request
 	 * @throws ActionDataException
 	 * @throws ValidationException
-	 * @throws UserException
 	 * @return RedirectResponse
 	 */
 	public function update(int $id, Request $request): RedirectResponse
@@ -101,14 +92,14 @@ final class UserController extends Controller
 			'id'      => $id,
 			'user_id' => $request->user()->id,
 		]);
-		$this->service->store(StoreUserActionData::fromRequest($request));
+		$this->service->store(StoreDocumentActionData::fromRequest($request));
 		
 		return to_route('user.index')->with('message', trans('all.updated'));
 	}
 	
 	/**
 	 * @param  int  $id
-	 * @throws UserException
+	 * @throws DocumentException
 	 * @return RedirectResponse
 	 */
 	public function delete(int $id): RedirectResponse

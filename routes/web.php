@@ -44,3 +44,5 @@ Route::controller(UserController::class)->middleware('role:admin')->name('user.'
 	Route::post('/{id}/update', 'update')->name('update');
 	Route::get('/{id}/delete', 'delete')->name('delete');
 });
+
+

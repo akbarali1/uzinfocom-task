@@ -17,6 +17,7 @@ return [
 		"message"     => "Nomalum xatolik",
 		"description" => "Bu xatolik turi topilmaganida chiqadi",
 	],
+	#region User exceptions
 	'-1000' => [
 		"message"     => "User topilmadi",
 		"description" => "Foydalanuvchi topilmadi. ",
@@ -33,4 +34,11 @@ return [
 		"message"     => "Rol topilmadi",
 		"description" => "Rol topilmaganda chiqadigan exception turi.",
 	],
+	#endregion
+	#region Document exceptions
+	'-2000' => [
+		"message"     => "Hujjat topilmadi",
+		"description" => "Hujjat topilmadi. ",
+	],
+	#endregion
 ];
