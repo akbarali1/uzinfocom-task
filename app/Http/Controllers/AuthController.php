@@ -5,11 +5,25 @@ namespace App\Http\Controllers;
 
 use App\ActionData\AuthActionData;
 use App\Models\User;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 
+/**
+ * Created by PhpStorm.
+ * Filename: AuthController.php
+ * Project Name: uzinfocom-task
+ * Author: akbarali
+ * Date: 01/02/2025
+ * Time: 16:51
+ * GitHub: https://github.com/akbarali1
+ * Telegram: @akbar_aka
+ * E-mail: me@akbarali.uz
+ */
 final class AuthController extends Controller
 {
-	public function showLogin(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
+	public function showLogin(): View|Factory|Application
 	{
 		return view('auth.login');
 	}
