@@ -9,13 +9,16 @@
   ],
   "license":"MIT",
   "require":{
-    "php":"^8.2",
-    "akbarali/action-data":"^1.4",
-    "akbarali/data-object":"^2.8",
-    "laravel/framework":"^11.31",
-    "laravel/tinker":"^2.9"
+    "php": "^8.2",
+    "akbarali/action-data": "^1.4",
+    "akbarali/data-object": "^2.8",
+    "akbarali/view-model": "^2.1",
+    "laravel/framework": "^11.31",
+    "laravel/tinker": "^2.9",
+    "spatie/laravel-permission": "^6.12"
   },
   "require-dev":{
+    "roave/security-advisories":"dev-latest",
     "fakerphp/faker":"^1.23",
     "laravel/pail":"^1.1",
     "laravel/pint":"^1.13",
@@ -26,6 +29,9 @@
     "pestphp/pest-plugin-laravel":"^3.1"
   },
   "autoload":{
+    "files":[
+      "app/Helpers/helper.php"
+    ],
     "psr-4":{
       "App\\":"app/",
       "Database\\Factories\\":"database/factories/",
