@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \App\ViewModels\TopicViewModel $item
+ * @var \App\ViewModels\UserViewModel $item
  */
 ?>
 @extends('layouts.app')
@@ -11,12 +11,12 @@
                 {{$item->subject->title}} -
                 {{ trans(isset($item->id) ?  "form.editing_item" : "form.creating_item") }}
             </h5>
-            <a class="btn btn-sm btn-outline-primary" href="{{ route("subject.topic.index", ['subject_id' => $item->subject_id]) }}">
+            <a class="btn btn-sm btn-outline-primary" href="{{ route("subject.user.index", ['subject_id' => $item->subject_id]) }}">
                 <i class="c-icon c-icon-sm cil-arrow-left"></i> @lang('form.back')
             </a>
         </div>
         <form class="form-horizontal" method="post"
-              action="{{ isset($item->id) ? route('subject.topic.update', ['subject_id' => $item->subject_id, 'id' => $item->id]) : route('subject.topic.store', ['subject_id' => $item->subject_id]) }}">
+              action="{{ isset($item->id) ? route('subject.user.update', ['subject_id' => $item->subject_id, 'id' => $item->id]) : route('subject.user.store', ['subject_id' => $item->subject_id]) }}">
             @csrf
             <div class="card-body">
                 @if ($errors->any())

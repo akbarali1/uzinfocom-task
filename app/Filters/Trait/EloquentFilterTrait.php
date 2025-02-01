@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Filters\Trait;
 
-use App\Filters\EloquentFilterContract;
+use App\Contracts\EloquentFilterContract;
 use Illuminate\Database\Eloquent\Builder;
 
 /**

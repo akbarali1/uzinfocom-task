@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "67e87b7de778063bf98ec79bbb65231a",
+    "content-hash": "adb449014a9d348a433eaa0e0c883301",
     "packages": [
         {
             "name": "akbarali/action-data",
@@ -10184,7 +10184,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2"
+        "php": "^8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"

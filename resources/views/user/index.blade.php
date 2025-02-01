@@ -1,7 +1,7 @@
 <?php
 /**
- * @var \Illuminate\Pagination\LengthAwarePaginator|\App\ViewModels\SubjectViewModel[] $pagination
- * @var \App\DataObject\SubjectData                                                    $subject
+ * @var \Illuminate\Pagination\LengthAwarePaginator|\App\ViewModels\UserViewModel[] $pagination
+ * @var \App\DataObject\SubjectData                                                 $subject
  */
 ?>
 
@@ -10,17 +10,17 @@
     @php
         $subject = $item['subject'];
     @endphp
-        <!-- /.row-->
+            <!-- /.row-->
     <div class="row">
         <div class="col-lg-12">
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="m-0">{{ $subject->title }} - @lang('form.topic')</h5>
+                    <h5 class="m-0">{{ $subject->title }} - @lang('form.user')</h5>
                     <div>
                         <a href="{{ route('subject.index') }}" class="btn btn-sm btn-outline-primary">
                             <i class="c-icon c-icon-sm cil-arrow-left"></i> @lang('form.back_to_subjects')
                         </a>
-                        <a class="btn btn-sm btn-success" href="{{ route('subject.topic.create',$subject->id) }}">
+                        <a class="btn btn-sm btn-success" href="{{ route('subject.user.create',$subject->id) }}">
                             <i class="c-icon c-icon-sm cil-plus"></i> @lang('form.add')
                         </a>
                     </div>
@@ -45,13 +45,13 @@
                                 <td>{{ $item->content }}</td>
                                 <td>{{ $item->createdAt }}</td>
                                 <td>
-                                    <a href="{{ route('subject.topic.edit',['subject_id' => $subject->id, 'id' => $item->id]) }}"
+                                    <a href="{{ route('subject.user.edit',['subject_id' => $subject->id, 'id' => $item->id]) }}"
                                        class="btn btn-sm btn-info text-white">
                                         @lang('form.edit')
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="{{ route('subject.topic.delete', ['subject_id' => $subject->id, 'id' => $item->id]) }}"
+                                    <a href="{{ route('subject.user.delete', ['subject_id' => $subject->id, 'id' => $item->id]) }}"
                                        class="btn btn-sm btn-danger text-white" data-action="delete">
                                         @lang('form.delete')
                                     </a>

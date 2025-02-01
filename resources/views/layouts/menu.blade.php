@@ -18,7 +18,7 @@
 {{--            </a>--}}
         </li>
         {{-- <li class="menu-item">
-             <a href="{{ route('topic.index') }}" class="menu-link">
+             <a href="{{ route('user.index') }}" class="menu-link">
                  <i class="menu-icon tf-icons bx bx-collection"></i>
                  @lang('form.topics')
              </a>

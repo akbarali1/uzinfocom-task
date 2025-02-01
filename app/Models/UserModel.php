@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Filters\Trait\EloquentFilterTrait;
 use Illuminate\Support\Carbon;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * Created by PhpStorm.
@@ -24,5 +26,7 @@ use Illuminate\Support\Carbon;
  */
 class UserModel extends User
 {
+	use HasRoles, EloquentFilterTrait;
+	
 	protected $table = 'users';
 }
