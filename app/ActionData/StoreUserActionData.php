@@ -23,13 +23,14 @@ class StoreUserActionData extends ActionDataBase
 	public readonly string  $name;
 	public readonly string  $email;
 	public readonly ?string $password;
+	public readonly ?string $password_confirmation;
 	
 	protected function prepare(): void
 	{
 		$this->rules = [
-			"title"    => "required|max:100",
+			"name"     => "required|max:100",
 			"email"    => "required|email",
-			'password' => ['required', 'confirmed', Password::default()->mixedCase()->letters()->symbols()->numbers()->uncompromised()],
+			'password' => ['nullable', 'confirmed', Password::default()->mixedCase()->letters()->symbols()->numbers()->uncompromised()],
 		];
 	}
 	

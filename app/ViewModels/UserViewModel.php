@@ -23,6 +23,7 @@ class UserViewModel extends BaseViewModel
 	public readonly int $id;
 	public string       $name;
 	public ?string      $email;
+	public array        $roleNames = [];
 	public ?string      $createdAt;
 	
 	protected DataObjectBase|UserDataObject $_data;
@@ -30,6 +31,11 @@ class UserViewModel extends BaseViewModel
 	protected function populate(): void
 	{
 		$this->createdAt = $this->_data->createdAt->format('d.m.Y H:i');
+		
+		$this->roleNames = [];
+		foreach ($this->_data->roles as $role) {
+			$this->roleNames[] = $role->name;
+		}
 	}
 	
 }

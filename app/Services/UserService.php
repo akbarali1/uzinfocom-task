@@ -5,7 +5,11 @@ namespace App\Services;
 
 use Akbarali\DataObject\DataObjectCollection;
 use App\ActionData\StoreUserActionData;
+use App\DataObjects\User\RoleData;
 use App\DataObjects\UserDataObject;
+use App\Entities\Role;
+use App\Exceptions\UserException;
+use App\Filters\FilterContract;
 use App\Models\UserModel;
 use Illuminate\Validation\ValidationException;
 
@@ -31,7 +35,7 @@ final class UserService
 	 */
 	public function paginate(int $page = 1, int $limit = 15, ?iterable $filters = null): DataObjectCollection
 	{
-		$model = UserModel::applyEloquentFilters($filters)->latest();
+		$model = UserModel::applyEloquentFilters($filters, ['roles'])->latest();
 		$model->select(['users.*']);
 		
 		$totalCount = $model->count();
@@ -50,45 +54,53 @@ final class UserService
 	public function store(StoreUserActionData $actionData): UserDataObject
 	{
 		if (isset($actionData->id)) {
-			$subject = UserModel::query()->find($actionData->id);
-			$actionData->addValidationRule('id', 'required|exists:subjects,id');
+			$model = UserModel::query()->find($actionData->id);
+			$actionData->addValidationRule('id', 'required|exists:users,id');
 		} else {
-			$subject = new UserModel();
+			$model = new UserModel();
+			$actionData->addValidationRule('password', 'required');
 		}
 		$actionData->validateException();
 		
-		$subject->fill($actionData->toArray());
-		$subject->save();
+		$model->fill($actionData->toArray(true));
+		$model->save();
+		$model->syncRoles(['superadmin']);
 		
-		return UserDataObject::fromModel($subject);
+		return UserDataObject::fromModel($model);
 	}
 	
 	/**
 	 * @param  int  $id
+	 * @throws UserException
 	 * @return UserDataObject
 	 */
-	public function getSubject(int $id): UserDataObject
+	public function getUser(int $id): UserDataObject
 	{
-		$subject = UserModel::query()->find($id);
-		if (is_null($subject)) {
-			throw new OperationException("Subject not found", OperationException::ERROR_NOT_FOUND);
+		$model = UserModel::query()->with(['roles'])->find($id);
+		if (is_null($model)) {
+			throw UserException::userNotFound();
 		}
 		
-		return UserDataObject::fromModel($subject);
+		return UserDataObject::fromModel($model);
 	}
 	
 	/**
 	 * @param  int  $id
+	 * @throws UserException
 	 * @return void
 	 */
 	public function delete(int $id): void
 	{
-		$subject = UserModel::query()->find($id);
+		$model = UserModel::query()->find($id);
 		
-		if (is_null($subject)) {
-			throw new OperationException("Subject not found", OperationException::ERROR_NOT_FOUND);
+		if (is_null($model)) {
+			throw UserException::userNotFound();
 		}
-		$subject->delete();
+		
+		if (UserModel::query()->count() === 1) {
+			throw UserException::cannotDeleteLastUser();
+		}
+		
+		$model->delete();
 	}
-	
 }

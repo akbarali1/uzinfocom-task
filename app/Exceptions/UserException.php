@@ -34,4 +34,11 @@ class UserException extends InternalException
 		);
 	}
 	
+	public static function cannotDeleteLastUser(): static
+	{
+		return static::new(
+			code: ExceptionCode::CannotDeleteLastUser,
+		);
+	}
+	
 }

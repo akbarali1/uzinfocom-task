@@ -60,16 +60,16 @@
         },
         {
             "name": "akbarali/data-object",
-            "version": "2.8.5",
+            "version": "2.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/akbarali1/data-object.git",
-                "reference": "17ca40b3023e037499d0167b0b70ee6aca77ef67"
+                "reference": "3cb6aa6039223b9c724caa43326d6a1556e264c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akbarali1/data-object/zipball/17ca40b3023e037499d0167b0b70ee6aca77ef67",
-                "reference": "17ca40b3023e037499d0167b0b70ee6aca77ef67",
+                "url": "https://api.github.com/repos/akbarali1/data-object/zipball/3cb6aa6039223b9c724caa43326d6a1556e264c7",
+                "reference": "3cb6aa6039223b9c724caa43326d6a1556e264c7",
                 "shasum": ""
             },
             "require": {
@@ -111,9 +111,9 @@
             ],
             "support": {
                 "issues": "https://github.com/akbarali1/data-object/issues",
-                "source": "https://github.com/akbarali1/data-object/tree/2.8.5"
+                "source": "https://github.com/akbarali1/data-object/tree/2.8.6"
             },
-            "time": "2025-01-30T14:19:38+00:00"
+            "time": "2025-02-01T12:46:56+00:00"
         },
         {
             "name": "akbarali/view-model",

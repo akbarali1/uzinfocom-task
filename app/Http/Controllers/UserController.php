@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use Akbarali\ActionData\ActionDataException;
 use Akbarali\ViewModel\PaginationViewModel;
 use App\ActionData\StoreUserActionData;
+use App\Exceptions\UserException;
 use App\Services\UserService;
 use App\ViewModels\UserViewModel;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Created by PhpStorm.
@@ -37,7 +40,7 @@ final class UserController extends Controller
 		$filters        = collect();
 		$dataCollection = $this->service->paginate((int) $request->get('page', 1), 25, $filters);
 		
-		return new PaginationViewModel($dataCollection, UserViewModel::class)->toView('subject.index');
+		return new PaginationViewModel($dataCollection, UserViewModel::class)->toView('user.index');
 	}
 	
 	/**
@@ -45,73 +48,64 @@ final class UserController extends Controller
 	 */
 	public function create(): View
 	{
-		return view('subject.store');
+		return view('user.store');
 	}
 	
 	/**
 	 * @param  Request  $request
+	 * @throws ActionDataException
+	 * @throws ValidationException
 	 * @return RedirectResponse
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		try {
-			$request->request->set('user_id', $request->user()->id);
-			$this->service->store(StoreUserActionData::createFromRequest($request));
-			
-			return to_route('subject.index')->with('message', trans('all.saved'));
-		} catch (\Exception $e) {
-			return back()->withInput()->withErrors($e->getMessage());
-		}
+		$request->request->set('user_id', $request->user()->id);
+		$this->service->store(StoreUserActionData::fromRequest($request));
+		
+		return to_route('user.index')->with('message', trans('all.saved'));
 	}
 	
 	/**
 	 * @param  int  $id
+	 * @throws UserException
 	 * @return View|RedirectResponse
 	 */
 	public function edit(int $id): View|RedirectResponse
 	{
-		try {
-			$subjectData = $this->service->getSubject($id);
-			$viewModel   = new UserViewModel($subjectData);
-			
-			return $viewModel->toView('subject.store');
-		} catch (\Throwable $th) {
-			return to_route('subject.index')->withErrors($th->getMessage());
-		}
+		$userData  = $this->service->getUser($id);
+		$viewModel = new UserViewModel($userData);
+		
+		return $viewModel->toView('user.store');
 	}
 	
 	/**
 	 * @param  int      $id
 	 * @param  Request  $request
+	 * @throws ActionDataException
+	 * @throws ValidationException
 	 * @return RedirectResponse
 	 */
 	public function update(int $id, Request $request): RedirectResponse
 	{
-		try {
-			$request->request->add([
-				'id'      => $id,
-				'user_id' => $request->user()->id,
-			]);
-			$this->service->store(StoreUserActionData::fromRequest($request));
-			
-			return to_route('subject.index')->with('message', trans('all.updated'));
-		} catch (\Throwable $e) {
-			return back()->withInput()->withErrors($e->getMessage());
-		}
+		$request->request->add([
+			'id'      => $id,
+			'user_id' => $request->user()->id,
+		]);
+		$this->service->store(StoreUserActionData::fromRequest($request));
+		
+		return to_route('user.index')->with('message', trans('all.updated'));
 	}
 	
 	/**
 	 * @param  int  $id
+	 * @throws UserException
 	 * @return RedirectResponse
 	 */
 	public function delete(int $id): RedirectResponse
 	{
-		try {
-			$this->service->delete($id);
-			
-			return back()->with('message', trans('form.deleted'));
-		} catch (\Throwable $e) {
-			return to_route('subject.index')->withErrors($th->getMessage());
-		}
+		$this->service->delete($id);
+		
+		return back()->with('message', trans('form.deleted'));
+		//			return to_route('user.index')->withErrors($e->getMessage());
 	}
 }

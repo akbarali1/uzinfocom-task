@@ -5,18 +5,16 @@
 ?>
 @extends('layouts.app')
 @section('content')
-    <div class="card mb-0">
+    <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="m-0">
-                {{$item->subject->title}} -
                 {{ trans(isset($item->id) ?  "form.editing_item" : "form.creating_item") }}
             </h5>
-            <a class="btn btn-sm btn-outline-primary" href="{{ route("subject.user.index", ['subject_id' => $item->subject_id]) }}">
+            <a class="btn btn-sm btn-outline-primary" href="{{ route("user.index") }}">
                 <i class="c-icon c-icon-sm cil-arrow-left"></i> @lang('form.back')
             </a>
         </div>
-        <form class="form-horizontal" method="post"
-              action="{{ isset($item->id) ? route('subject.user.update', ['subject_id' => $item->subject_id, 'id' => $item->id]) : route('subject.user.store', ['subject_id' => $item->subject_id]) }}">
+        <form class="form-horizontal" action="{{ isset($item->id) ? route('user.update', $item->id) : route('user.store') }}" method="post">
             @csrf
             <div class="card-body">
                 @if ($errors->any())
@@ -29,21 +27,39 @@
                     </div>
                 @endif
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="title">@lang('form.title')</label>
-                            <div class="col-md-10">
-                                <input class="form-control" id="title" type="text" name="title" value="{{ old('title', $item->title ?? "") }}"
-                                       placeholder="@lang('form.title')" autocomplete="off" required autofocus>
+                            <div class="col-md-12">
+                                <label class="col-form-label" for="name">@lang('form.name')</label>
+                                <input class="form-control" id="name" type="text" name="name" value="{{ old('name', $item->name ?? "") }}"
+                                       placeholder="@lang('form.name')" autocomplete="off" required autofocus>
                             </div>
                         </div>
-                        <hr>
+                    </div>
+                    <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="content">@lang('form.content')</label>
-                            <div class="col-md-10">
-                                        <textarea class="form-control" id="content" type="content" name="content"
-                                                  rows="15"
-                                                  placeholder="@lang('form.content')" autocomplete="off">{{ old('content', $item->content ?? "") }}</textarea>
+                            <div class="col-md-12">
+                                <label class="col-form-label" for="name">@lang('form.email')</label>
+                                <input class="form-control" id="email" type="email" name="email" value="{{ old('email', $item->email ?? "") }}"
+                                       placeholder="@lang('form.email')" autocomplete="off" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label" for="name">@lang('form.password')</label>
+                                <input class="form-control" id="password" type="password" name="password" value="{{ old('password') }}"
+                                       placeholder="@lang('form.password')" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label" for="name">@lang('form.password_confirmation')</label>
+                                <input class="form-control" id="password_confirmation" type="password" name="password_confirmation" value="{{ old('password_confirmation') }}"
+                                       placeholder="@lang('form.password_confirmation')" autocomplete="off">
                             </div>
                         </div>
                     </div>

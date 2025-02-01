@@ -1,0 +1,46 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\UserModel;
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+class RoleSeeder extends Seeder
+{
+	/**
+	 * Run the database seeds.
+	 */
+	public function run(): void
+	{
+		$permissions = [
+			'document.create',
+			'document.view',
+			'document.update',
+			'document.delete',
+			'document.view.own',
+			'document.update.own',
+			'document.delete.own',
+		];
+		
+		foreach ($permissions as $permission) {
+			Permission::query()->firstOrCreate(['name' => $permission]);
+		}
+		
+		$adminRole = Role::query()->firstOrCreate(['name' => 'admin']);
+		$userRole  = Role::query()->firstOrCreate(['name' => 'user']);
+		$adminRole->syncPermissions($permissions);
+		$userRole->syncPermissions([
+			'document.create',
+			'document.view.own',
+			'document.update.own',
+			'document.delete.own',
+		]);
+		
+		if (UserModel::query()->exists()) {
+			$admin = UserModel::query()->first();
+			$admin->assignRole('admin');
+		}
+	}
+}

@@ -1,38 +1,29 @@
 <?php
 /**
  * @var \Illuminate\Pagination\LengthAwarePaginator|\App\ViewModels\UserViewModel[] $pagination
- * @var \App\DataObject\SubjectData                                                 $subject
  */
 ?>
-
 @extends('layouts.app')
 @section('content')
-    @php
-        $subject = $item['subject'];
-    @endphp
-            <!-- /.row-->
+    <!-- /.row-->
     <div class="row">
         <div class="col-lg-12">
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="m-0">{{ $subject->title }} - @lang('form.user')</h5>
-                    <div>
-                        <a href="{{ route('subject.index') }}" class="btn btn-sm btn-outline-primary">
-                            <i class="c-icon c-icon-sm cil-arrow-left"></i> @lang('form.back_to_subjects')
-                        </a>
-                        <a class="btn btn-sm btn-success" href="{{ route('subject.user.create',$subject->id) }}">
-                            <i class="c-icon c-icon-sm cil-plus"></i> @lang('form.add')
-                        </a>
-                    </div>
+                    <h5 class="m-0">@lang('form.users')</h5>
+                    <a class="btn btn-sm btn-success" href="{{ route('user.create') }}">
+                        <i class="c-icon c-icon-sm cil-plus"></i> @lang('form.add')
+                    </a>
                 </div>
                 <div class="card-body">
                     <table class="table table-responsive-sm table-striped table-sm">
                         <thead>
                         <tr>
                             <th class="b-t-0">ID</th>
-                            <th class="b-t-0">@lang('form.title')</th>
-                            <th class="b-t-0">@lang('form.content')</th>
-                            <th class="b-t-0">@lang('form.created_at')</th>
+                            <th class="b-t-0">@lang('form.name')</th>
+                            <th class="b-t-0">@lang('form.email')</th>
+                            <th class="b-t-0 text-center">@lang('form.roles')</th>
+                            <th class="b-t-0 text-center">@lang('form.created_at')</th>
                             <th class="b-t-0" width="5px"></th>
                             <th class="b-t-0" width="5px"></th>
                         </tr>
@@ -41,17 +32,21 @@
                         @forelse($pagination as $item)
                             <tr>
                                 <td>{{ $item->id }}</td>
-                                <td>{{ $item->title }}</td>
-                                <td>{{ $item->content }}</td>
-                                <td>{{ $item->createdAt }}</td>
+                                <td>{{ $item->name }}</td>
+                                <td>{{ $item->email }}</td>
+                                <td class="text-center">
+                                    @foreach($item->roleNames as $roleName)
+                                        <span class="badge text-bg-success">{{ $roleName }}</span>
+                                    @endforeach
+                                </td>
+                                <td class="text-center">{{ $item->createdAt }}</td>
                                 <td>
-                                    <a href="{{ route('subject.user.edit',['subject_id' => $subject->id, 'id' => $item->id]) }}"
-                                       class="btn btn-sm btn-info text-white">
+                                    <a href="{{ route('user.edit',$item->id) }}" class="btn btn-sm btn-info text-white">
                                         @lang('form.edit')
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="{{ route('subject.user.delete', ['subject_id' => $subject->id, 'id' => $item->id]) }}"
+                                    <a href="{{ route('user.delete',$item->id) }}"
                                        class="btn btn-sm btn-danger text-white" data-action="delete">
                                         @lang('form.delete')
                                     </a>
@@ -59,7 +54,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">@lang('form.no_data')</td>
+                                <td colspan="8" class="text-center">@lang('form.no_data')</td>
                             </tr>
                         @endforelse
                         </tbody>
@@ -72,7 +67,7 @@
                 </div>
             @endif
         </div>
-        <!-- /.col-->
     </div>
+    <!-- /.col-->
     <!-- /.row-->
 @endsection

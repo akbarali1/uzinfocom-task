@@ -18,9 +18,10 @@ namespace App\Enums;
  */
 enum ExceptionCode: int
 {
-	case UnknownExceptionCode = -999;
-	case UserNotFound         = -1000;
+	case CannotDeleteLastUser = -1002;
 	case StoreUserFailed      = -1001;
+	case UserNotFound         = -1000;
+	case UnknownExceptionCode = -999;
 	
 	public function getStatusCode(): int
 	{

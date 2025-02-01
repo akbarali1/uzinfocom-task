@@ -25,4 +25,8 @@ return [
 		"message"     => "Userni saqlab bo'lmadi topilmadi",
 		"description" => "User yaratish yoki yangilashda xatolik bo'lsa chiqadigan xatolik turi.",
 	],
+	'-1002' => [
+		"message"     => "Siz so'ngi qolgan userni o'chira olmaysiz.",
+		"description" => "Oxirigi user o'zini o'zi o'chira olmaydi.",
+	],
 ];

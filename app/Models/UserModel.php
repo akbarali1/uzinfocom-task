@@ -28,5 +28,12 @@ class UserModel extends User
 {
 	use HasRoles, EloquentFilterTrait;
 	
-	protected $table = 'users';
+	protected $table    = 'users';
+	protected $fillable = [
+		'name',
+		'email',
+		'password',
+		'created_at',
+	];
+	
 }

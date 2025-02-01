@@ -17,14 +17,10 @@ use Carbon\Carbon;
  * Telegram: @akbar_aka
  * E-mail: me@akbarali.uz
  */
-class UserDataObject extends DataObjectBase
+class RoleDataObject extends DataObjectBase
 {
 	public readonly int    $id;
 	public readonly string $name;
-	public readonly string $email;
+	public readonly string $guardName;
 	public readonly Carbon $createdAt;
-	
-	#relations
-	public readonly RoleDataObject|array $roles;
-	
 }
