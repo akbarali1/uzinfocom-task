@@ -13,17 +13,38 @@
         </a>
     </div>
     <div class="menu-inner-shadow"></div>
+    <li class="menu-header small text-uppercase"><span class="menu-header-text">@lang('menu.documents')</span></li>
+    <li class="menu-item">
+        @can('document.create')
+            <a href="{{ route('document.create') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-collection"></i>
+                @lang('menu.document.create')
+            </a>
+        @endcan
+        @can('document.upload')
+            <a href="{{ route('document.upload') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-collection"></i>
+                @lang('menu.document.upload')
+            </a>
+        @endcan
+        @can('document.view.own')
+            <a href="{{ route('document.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-collection"></i>
+                @lang('menu.document.list')
+            </a>
+        @endcan
+    </li>
     <ul class="menu-inner py-1">
-        @if(auth()->user()->hasRole('admin'))
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">@lang('menu.settings')</span></li>
-            @if (Route::has('user.index'))
-                <li class="menu-item">
-                    <a href="{{ route('user.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-collection"></i>
-                        @lang('form.users')
-                    </a>
-                </li>
-            @endif
+        @role('admin')
+        <li class="menu-header small text-uppercase"><span class="menu-header-text">@lang('menu.settings')</span></li>
+        @if (Route::has('user.index'))
+            <li class="menu-item">
+                <a href="{{ route('user.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-collection"></i>
+                    @lang('form.users')
+                </a>
+            </li>
         @endif
+        @endrole
     </ul>
 </aside>

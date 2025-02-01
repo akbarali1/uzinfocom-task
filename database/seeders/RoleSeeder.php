@@ -17,6 +17,7 @@ class RoleSeeder extends Seeder
 		$permissions = [
 			'document.create',
 			'document.view',
+			'document.upload',
 			'document.update',
 			'document.delete',
 			'document.view.own',
@@ -33,6 +34,7 @@ class RoleSeeder extends Seeder
 		$adminRole->syncPermissions($permissions);
 		$userRole->syncPermissions([
 			'document.create',
+			'document.upload',
 			'document.view.own',
 			'document.update.own',
 			'document.delete.own',
