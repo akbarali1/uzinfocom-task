@@ -29,4 +29,8 @@ return [
 		"message"     => "Siz so'ngi qolgan userni o'chira olmaysiz.",
 		"description" => "Oxirigi user o'zini o'zi o'chira olmaydi.",
 	],
+	'-1003' => [
+		"message"     => "Rol topilmadi",
+		"description" => "Rol topilmaganda chiqadigan exception turi.",
+	],
 ];

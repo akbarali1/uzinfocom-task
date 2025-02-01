@@ -25,6 +25,6 @@ class UserDataObject extends DataObjectBase
 	public readonly Carbon $createdAt;
 	
 	#relations
-	public readonly RoleDataObject|array $roles;
+	public RoleDataObject|array $roles = [];
 	
 }

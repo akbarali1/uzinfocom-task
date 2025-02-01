@@ -38,7 +38,7 @@ Route::controller(AuthController::class)->group(function () {
  * @uses UserController::update()
  * @uses UserController::delete()
  */
-Route::controller(UserController::class)->name('user.')->prefix('users')->group(function () {
+Route::controller(UserController::class)->middleware('role:admin')->name('user.')->prefix('users')->group(function () {
 	Route::get('/', 'index')->name('index');
 	Route::get('/create', 'create')->name('create');
 	Route::post('/store', 'store')->name('store');

@@ -20,6 +20,7 @@ use Illuminate\Validation\Rules\Password;
 class StoreUserActionData extends ActionDataBase
 {
 	public readonly ?int    $id;
+	public readonly string  $role_id;
 	public readonly string  $name;
 	public readonly string  $email;
 	public readonly ?string $password;
@@ -29,6 +30,7 @@ class StoreUserActionData extends ActionDataBase
 	{
 		$this->rules = [
 			"name"     => "required|max:100",
+			"role_id"  => "required|exists:roles,id",
 			"email"    => "required|email",
 			'password' => ['nullable', 'confirmed', Password::default()->mixedCase()->letters()->symbols()->numbers()->uncompromised()],
 		];

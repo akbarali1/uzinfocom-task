@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Akbarali\ActionData\ActionDataException;
+use Akbarali\ViewModel\EmptyData;
 use Akbarali\ViewModel\PaginationViewModel;
 use App\ActionData\StoreUserActionData;
 use App\Exceptions\UserException;
@@ -48,12 +49,17 @@ final class UserController extends Controller
 	 */
 	public function create(): View
 	{
-		return view('user.store');
+		$viewModel = UserViewModel::fromDataObject(EmptyData::fromArray([]));
+		$roles     = $this->service->getRoles();
+		$viewModel->setRolesList($roles);
+		
+		return $viewModel->toView('user.store');
 	}
 	
 	/**
 	 * @param  Request  $request
 	 * @throws ActionDataException
+	 * @throws UserException
 	 * @throws ValidationException
 	 * @return RedirectResponse
 	 */
@@ -74,6 +80,9 @@ final class UserController extends Controller
 	{
 		$userData  = $this->service->getUser($id);
 		$viewModel = new UserViewModel($userData);
+		
+		$roles = $this->service->getRoles();
+		$viewModel->setRolesList($roles);
 		
 		return $viewModel->toView('user.store');
 	}

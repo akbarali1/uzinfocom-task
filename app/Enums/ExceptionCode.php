@@ -18,6 +18,7 @@ namespace App\Enums;
  */
 enum ExceptionCode: int
 {
+	case RoleNotFound         = -1003;
 	case CannotDeleteLastUser = -1002;
 	case StoreUserFailed      = -1001;
 	case UserNotFound         = -1000;

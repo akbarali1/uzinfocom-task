@@ -29,7 +29,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 mb-3">
                                 <label class="col-form-label" for="name">@lang('form.name')</label>
                                 <input class="form-control" id="name" type="text" name="name" value="{{ old('name', $item->name ?? "") }}"
                                        placeholder="@lang('form.name')" autocomplete="off" required autofocus>
@@ -38,7 +38,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 mb-3">
                                 <label class="col-form-label" for="name">@lang('form.email')</label>
                                 <input class="form-control" id="email" type="email" name="email" value="{{ old('email', $item->email ?? "") }}"
                                        placeholder="@lang('form.email')" autocomplete="off" required>
@@ -47,7 +47,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 mb-3">
                                 <label class="col-form-label" for="name">@lang('form.password')</label>
                                 <input class="form-control" id="password" type="password" name="password" value="{{ old('password') }}"
                                        placeholder="@lang('form.password')" autocomplete="off">
@@ -56,10 +56,24 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 mb-3">
                                 <label class="col-form-label" for="name">@lang('form.password_confirmation')</label>
                                 <input class="form-control" id="password_confirmation" type="password" name="password_confirmation" value="{{ old('password_confirmation') }}"
                                        placeholder="@lang('form.password_confirmation')" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label" for="defaultSelect" for="role">@lang('form.role')</label>
+                                <select id="defaultSelect" class="form-select" required name="role_id">
+                                    <option value="">@lang('form.select_role')</option>
+                                    @foreach($item->listOfRoles as $role)
+                                        <option value="{{ $role->id }}" @selected(in_array($role->id, $item->roleIds ?? [], true))>{{ $role->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

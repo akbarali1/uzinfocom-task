@@ -41,4 +41,11 @@ class UserException extends InternalException
 		);
 	}
 	
+	public static function roleNotFound(): static
+	{
+		return static::new(
+			code: ExceptionCode::RoleNotFound
+		);
+	}
+	
 }

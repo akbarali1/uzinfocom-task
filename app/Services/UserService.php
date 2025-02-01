@@ -5,11 +5,10 @@ namespace App\Services;
 
 use Akbarali\DataObject\DataObjectCollection;
 use App\ActionData\StoreUserActionData;
-use App\DataObjects\User\RoleData;
+use App\DataObjects\RoleDataObject;
 use App\DataObjects\UserDataObject;
-use App\Entities\Role;
 use App\Exceptions\UserException;
-use App\Filters\FilterContract;
+use App\Models\RoleModel;
 use App\Models\UserModel;
 use Illuminate\Validation\ValidationException;
 
@@ -49,10 +48,15 @@ final class UserService
 	/**
 	 * @param  StoreUserActionData  $actionData
 	 * @throws ValidationException
+	 * @throws UserException
 	 * @return UserDataObject
 	 */
 	public function store(StoreUserActionData $actionData): UserDataObject
 	{
+		$role = RoleModel::query()->find($actionData->role_id);
+		if (is_null($role)) {
+			throw UserException::roleNotFound();
+		}
 		if (isset($actionData->id)) {
 			$model = UserModel::query()->find($actionData->id);
 			$actionData->addValidationRule('id', 'required|exists:users,id');
@@ -64,7 +68,8 @@ final class UserService
 		
 		$model->fill($actionData->toArray(true));
 		$model->save();
-		$model->syncRoles(['superadmin']);
+		
+		$model->syncRoles($role);
 		
 		return UserDataObject::fromModel($model);
 	}
@@ -102,5 +107,10 @@ final class UserService
 		}
 		
 		$model->delete();
+	}
+	
+	public function getRoles(iterable $filters = [], array|string $with = [])
+	{
+		return RoleModel::applyEloquentFilters($filters, $with)->get()->transform(fn($value) => RoleDataObject::fromModel($value));
 	}
 }
