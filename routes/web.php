@@ -21,13 +21,11 @@ Route::controller(HomeController::class)->middleware('auth')->group(function () 
  * @uses AuthController::showLogin()
  * @uses AuthController::login()
  * @uses AuthController::logout()
- * @uses AuthController::userCreate()
  */
 Route::controller(AuthController::class)->group(function () {
 	Route::get('login', 'showLogin')->name('login');
 	Route::post('login', 'login');
 	Route::get('logout', 'logout')->name('logout');
-	Route::get('user-create', 'userCreate')->name('user.create');
 });
 
 /**

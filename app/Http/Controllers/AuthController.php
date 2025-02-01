@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\ActionData\AuthActionData;
-use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -51,12 +50,4 @@ final class AuthController extends Controller
 		return to_route('login');
 	}
 	
-	public function userCreate()
-	{
-		User::query()->create([
-			'name'     => 'Akbarali',
-			'email'    => 'github@akbararli.uz',
-			'password' => bcrypt('password'),
-		]);
-	}
 }
