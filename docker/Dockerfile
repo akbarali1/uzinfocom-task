@@ -65,6 +65,15 @@ RUN mkdir -p /home/$user/.composer && \
     mkdir -p /var/run/supervisor && \
     chown -R $user:$user /var/run/supervisor
 
+RUN mkdir -p /var/www/onlyoffice/Data && \
+    chown -R $user:$user /var/www/onlyoffice/Data
+
+# Entrypoint faylini nusxalash va bajarishga ruxsat berish
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+CMD ["/bin/bash"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
 USER $user

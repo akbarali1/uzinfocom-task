@@ -16,6 +16,7 @@ Route::get('/docs/exceptions/{code}', static fn($code) => view("exceptions.code"
  */
 Route::controller(HomeController::class)->middleware('auth')->group(function () {
 	Route::get('home', 'home')->name('home');
+	Route::get('home', 'test')->name('test')->withoutMiddleware('auth');
 });
 
 /**

@@ -21,3 +21,16 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/supervisor/*
+/docker/logs/*
+/docker/onlyoffice/DocumentServer/data/*
+/docker/onlyoffice/DocumentServer/db/*
+/docker/onlyoffice/DocumentServer/lib/*
+/docker/onlyoffice/DocumentServer/logs/*
+/docker/onlyoffice/.DS_Store
+
+/docker/DocumentServer/data/*
+/docker/DocumentServer/db/*
+/docker/DocumentServer/lib/*
+/docker/DocumentServer/logs/*
+/docker/pgdata/*
