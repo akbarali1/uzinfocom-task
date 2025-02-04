@@ -65,8 +65,8 @@ RUN mkdir -p /home/$user/.composer && \
     mkdir -p /var/run/supervisor && \
     chown -R $user:$user /var/run/supervisor
 
-RUN mkdir -p /var/www/onlyoffice/Data && \
-    chown -R $user:$user /var/www/onlyoffice/Data
+# RUN mkdir -p /var/www/onlyoffice/Data && \
+#    chown -R $user:$user /var/www/onlyoffice/Data
 
 # Entrypoint faylini nusxalash va bajarishga ruxsat berish
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh

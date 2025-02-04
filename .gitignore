@@ -29,6 +29,11 @@ yarn-error.log
 /docker/onlyoffice/DocumentServer/logs/*
 /docker/onlyoffice/.DS_Store
 
+/onlyoffice/DocumentServer/data/*
+/onlyoffice/DocumentServer/db/*
+/onlyoffice/DocumentServer/lib/*
+/onlyoffice/DocumentServer/logs/*
+
 /docker/DocumentServer/data/*
 /docker/DocumentServer/db/*
 /docker/DocumentServer/lib/*

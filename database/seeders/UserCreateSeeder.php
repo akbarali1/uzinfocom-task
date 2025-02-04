@@ -13,14 +13,24 @@ class UserCreateSeeder extends Seeder
 	 */
 	public function run(): void
 	{
-		$user = UserModel::query()->create([
+		$admin = UserModel::query()->create([
 			'name'     => 'Akbarali',
-			'email'    => 'github@akbararli.uz',
+			'email'    => 'github@akbarali.uz',
 			'password' => bcrypt('password'),
 		]);
 		
 		if (RoleModel::query()->where('name', 'admin')->exists()) {
-			$user->assignRole('admin');
+			$admin->assignRole('admin');
+		}
+		
+		$user = UserModel::query()->create([
+			'name'     => 'User',
+			'email'    => 'user@akbarali.uz',
+			'password' => bcrypt('userpass'),
+		]);
+		
+		if (RoleModel::query()->where('name', 'user')->exists()) {
+			$admin->assignRole('user');
 		}
 	}
 }

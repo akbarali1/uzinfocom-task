@@ -39,7 +39,7 @@ services:
     container_name: postgresql
     command: postgres -c 'max_connections=4096'
     environment:
-      POSTGRES_DB: "admin"
+      POSTGRES_DB: "uzinfocom_task"
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "b.n42!uk(m~DReN_K;/:ax"
       PGDATA: "/var/lib/postgresql/data/pgdata"
@@ -63,21 +63,21 @@ services:
     networks:
       - uzinfocom_task_network
 
-  onlyoffice:
-    image: onlyoffice/documentserver
-    container_name: onlyoffice_documentserver
-    restart: always
-    ports:
-      - "8006:80"
-    environment:
-      - JWT_SECRET=02bb5d68c4cda5e12dbbacdf7b27b3d08c97b42d1d6c6add87be52a599aa0468b1731edcd41c85d1d174080af325fe5f5bd2669f72028eca70f8feebe206df7ae0cd7689a558fe93eb4b3c67666d6c924ff9551c088dab197a7f3d15b19abcc59aaff37d4e41229f9ee02c86d5d685da27cbda14bba4367acad98640b7111f86e6582a3283fa2bba791f3e7c18f9e2884dddb7e9f2b0460d353ea0ac03b35bc73fdf3f487c155f3ced936808ec9969f56de3c7b76183fb5e98e581ac9943964a3eaee49a5126fa8c929489fd47bfc1453e43688f8adc690d6ee9d284c7180de1ee973217362425f23a3b20f60dfa066eec2bb5b148f90aa367a8797e053fbc34
-    volumes:
-      - ./DocumentServer/data:/var/www/onlyoffice/Data
-      - ./DocumentServer/logs:/var/log/onlyoffice
-      - ./DocumentServer/lib:/var/lib/onlyoffice
-      - ./DocumentServer/db:/var/lib/postgresql
-    networks:
-      - uzinfocom_task_network
+#  onlyoffice:
+#    image: onlyoffice/documentserver
+#    container_name: onlyoffice_documentserver
+#    restart: always
+#    ports:
+#      - "8006:80"
+#    environment:
+#      - JWT_SECRET=02bb5d68c4cda5e12dbbacdf7b27b3d08c97b42d1d6c6add87be52a599aa0468b1731edcd41c85d1d174080af325fe5f5bd2669f72028eca70f8feebe206df7ae0cd7689a558fe93eb4b3c67666d6c924ff9551c088dab197a7f3d15b19abcc59aaff37d4e41229f9ee02c86d5d685da27cbda14bba4367acad98640b7111f86e6582a3283fa2bba791f3e7c18f9e2884dddb7e9f2b0460d353ea0ac03b35bc73fdf3f487c155f3ced936808ec9969f56de3c7b76183fb5e98e581ac9943964a3eaee49a5126fa8c929489fd47bfc1453e43688f8adc690d6ee9d284c7180de1ee973217362425f23a3b20f60dfa066eec2bb5b148f90aa367a8797e053fbc34
+#    volumes:
+#      - ./DocumentServer/data:/var/www/onlyoffice/Data
+#      - ./DocumentServer/logs:/var/log/onlyoffice
+#      - ./DocumentServer/lib:/var/lib/onlyoffice
+#      - ./DocumentServer/db:/var/lib/postgresql
+#    networks:
+#      - uzinfocom_task_network
 
 volumes:
   redisdata:
