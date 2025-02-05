@@ -23,13 +23,13 @@ class DocumentViewModel extends BaseViewModel
 	public readonly int $id;
 	public string       $name;
 	public ?string      $email;
+	public ?string      $token;
 	
 	protected DataObjectBase|DocumentDataObject $_data;
 	
 	protected function populate(): void
 	{
 		$this->createdAt = $this->_data->createdAt->format('d.m.Y H:i');
-		
 	}
 	
 }

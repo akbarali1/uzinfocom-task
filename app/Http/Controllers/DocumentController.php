@@ -14,6 +14,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Firebase\JWT\JWT;
 
 /**
  * Created by PhpStorm.
@@ -49,7 +50,32 @@ final class DocumentController extends Controller
 	 */
 	public function create(): View
 	{
-		return DocumentViewModel::fromDataObject(EmptyData::fromArray([]))->toView('document.store');
+		$user = auth()->user(); 
+
+		$payload = [
+			"iat" => time(),
+			"exp" => time() + 3600,
+			"document" => [
+				"fileType" => "docx",
+				"key" => "Khirz6zTPdfd7",
+				"title" => "example.docx",
+				"url" => "https://uzinfocom.akbarali.uz/files/new.docx"
+			],
+			"editorConfig" => [
+				"mode" => "edit",
+				"callbackUrl" => "http://yourserver.com/callback",
+				"user" => [
+					"id" => $user->id,
+					"name" => $user->name
+				]
+			],
+		];
+		
+		$token = JWT::encode($payload, env('ONLYOFFICE_JWT_SECRET'), 'HS256');
+		$viewModel = DocumentViewModel::fromDataObject(EmptyData::fromArray([]));
+		$viewModel->token = $token;
+
+		return $viewModel->toView('document.store');
 	}
 	
 	/**

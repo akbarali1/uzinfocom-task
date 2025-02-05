@@ -9,14 +9,15 @@
   ],
   "license":"MIT",
   "require":{
-    "php":"^8.4",
-    "akbarali/action-data":"^1.4",
-    "akbarali/data-object":"^2.8",
-    "akbarali/view-model":"^2.1",
-    "grkamil/laravel-telegram-logging":"^1.12",
-    "laravel/framework":"^11.31",
-    "laravel/tinker":"^2.9",
-    "spatie/laravel-permission":"^6.12"
+    "php": "^8.4",
+    "akbarali/action-data": "^1.4",
+    "akbarali/data-object": "^2.8",
+    "akbarali/view-model": "^2.1",
+    "firebase/php-jwt": "^6.11",
+    "grkamil/laravel-telegram-logging": "^1.12",
+    "laravel/framework": "^11.31",
+    "laravel/tinker": "^2.9",
+    "spatie/laravel-permission": "^6.12"
   },
   "require-dev":{
     "roave/security-advisories":"dev-latest",
