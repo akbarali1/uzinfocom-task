@@ -7,7 +7,7 @@ services:
     expose:
       - "80"
     environment:
-      - JWT_SECRET=your-256-bit-secret
+      - JWT_SECRET=4a31760266ac7f3d14c3eaca5bb52851809de9dfa8e90b943d3402febeae82d9
 
   example:
     container_name: example
@@ -20,8 +20,8 @@ services:
       - "example:/srv"
     environment:
       - ADDRESS=0.0.0.0
-      - DOCUMENT_SERVER_PRIVATE_URL=http://proxy:8080
-      - DOCUMENT_SERVER_PUBLIC_URL=http://localhost:8080
+      - DOCUMENT_SERVER_PRIVATE_URL=https://bug-free-disco-6rxv7qxjvpqhxq5r-8080.app.github.dev/
+      - DOCUMENT_SERVER_PUBLIC_URL=https://bug-free-disco-6rxv7qxjvpqhxq5r-8080.app.github.dev/
       - EXAMPLE_URL=http://proxy
       - JWT_SECRET=4a31760266ac7f3d14c3eaca5bb52851809de9dfa8e90b943d3402febeae82d9
       - PORT=80

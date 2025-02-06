@@ -70,6 +70,9 @@ final class DocumentController extends Controller
 				]
 			],
 		];
+
+		$signature = hash_hmac('sha256', "Khirz6zTPdfd7", env('ONLYOFFICE_JWT_SECRET'));
+dd($signature);
 		
 		$token = JWT::encode($payload, env('ONLYOFFICE_JWT_SECRET'), 'HS256');
 		$viewModel = DocumentViewModel::fromDataObject(EmptyData::fromArray([]));
