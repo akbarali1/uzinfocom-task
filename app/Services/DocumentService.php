@@ -7,7 +7,6 @@ use Akbarali\DataObject\DataObjectCollection;
 use App\ActionData\StoreDocumentActionData;
 use App\ActionData\UploadFileActionData;
 use App\DataObjects\DocumentDataObject;
-use App\DataObjects\UserDataObject;
 use App\Exceptions\DocumentException;
 use App\Models\DocumentModel;
 use App\Models\UserModel;
@@ -31,7 +30,8 @@ final class DocumentService
 	 * @param  int            $page
 	 * @param  int            $limit
 	 * @param  iterable|null  $filters
-	 * @return DataObjectCollection<UserDataObject>
+	 * @param  array          $with
+	 * @return DataObjectCollection<DocumentDataObject>
 	 */
 	public function paginate(int $page = 1, int $limit = 15, ?iterable $filters = null, array $with = []): DataObjectCollection
 	{

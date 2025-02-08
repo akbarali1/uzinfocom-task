@@ -28,6 +28,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware('auth')->group(function () {
 	/**
 	 * @uses \App\Http\Controllers\HomeController::home()
+	 * @uses \App\Http\Controllers\HomeController::test()
 	 */
 	Route::controller(HomeController::class)->group(function () {
 		Route::get('home', 'home')->name('home');
@@ -54,8 +55,13 @@ Route::middleware('auth')->group(function () {
 	/**
 	 * @uses DocumentController::index()
 	 * @uses DocumentController::create()
+	 * @uses DocumentController::upload()
+	 * @uses DocumentController::uploadFile()
 	 * @uses DocumentController::store()
+	 * @uses DocumentController::download()
+	 * @uses DocumentController::callback()
 	 * @uses DocumentController::edit()
+	 * @uses DocumentController::view()
 	 * @uses DocumentController::update()
 	 * @uses DocumentController::delete()
 	 */
