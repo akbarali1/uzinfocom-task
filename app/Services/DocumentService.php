@@ -10,6 +10,7 @@ use App\DataObjects\DocumentDataObject;
 use App\Exceptions\DocumentException;
 use App\Models\DocumentModel;
 use App\Models\UserModel;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -119,5 +120,40 @@ final class DocumentService
 			"file_size"      => $actionData->file->getSize(),
 			"last_edited_at" => now(),
 		]);
+	}
+	
+	/**
+	 * @throws DocumentException
+	 * @throws \Exception
+	 */
+	public function rename(int $id, string $newName): array
+	{
+		/** @var DocumentModel $document */
+		$document = DocumentModel::query()->find($id);
+		
+		if (is_null($document)) {
+			throw DocumentException::documentNotFound();
+		}
+		
+		$fullPath = $document->file_path.$document->file_name;
+		if (!file_exists($fullPath)) {
+			throw DocumentException::fileNotFound();
+		}
+		
+		$newName         .= '.'.pathinfo($document->file_name, PATHINFO_EXTENSION);
+		$newFileFullPath = $document->file_path.$newName;
+		
+		if (!rename($fullPath, $newFileFullPath)) {
+			throw DocumentException::renameError();
+		}
+		
+		$document->update([
+			"file_name" => $newName,
+		]);
+		$commandRequest = OnlyOfficeService::commandRequest("meta", $document->id, ["title" => $document->file_name]);
+		Log::info("CommandRequest rename: ".$commandRequest);
+		
+		return ["result" => json_decode($commandRequest, true, 512, JSON_THROW_ON_ERROR)];
+		
 	}
 }

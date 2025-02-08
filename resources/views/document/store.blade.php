@@ -24,9 +24,9 @@
     *
     -->
     <title>ONLYOFFICE</title>
-{{--    <link rel="icon"--}}
-{{--          href="images/word.ico"--}}
-{{--          type="image/x-icon"/>--}}
+    {{--    <link rel="icon"--}}
+    {{--          href="images/word.ico"--}}
+    {{--          type="image/x-icon"/>--}}
     {{--    <link rel="stylesheet" type="text/css" href="http://localhost:8080/example/stylesheets/editor.css"/>--}}
     <style>
         html {
@@ -371,12 +371,12 @@
 
     var onRequestRename = function (event) { //  the user is trying to rename file by clicking Rename... button
         innerAlert("onRequestRename: " + JSON.stringify(event.data));
-
-        var newfilename = event.data;
-        var data        = {
-            newfilename: newfilename,
-            dockey     : config.document.key,
-            ext        : config.document.fileType
+        let newfilename = event.data;
+        let data        = {
+            newFileName: newfilename,
+            documentId : config.document.key,
+            ext        : config.document.fileType,
+            _token     : "{{ csrf_token() }}"
         };
 
         let xhr = new XMLHttpRequest();
@@ -498,8 +498,7 @@
         config.height = "100%";
 
         config.events = {
-            'onAppReady': onAppReady,
-            // 'onRequestClose'         : onRequestClose,
+            'onAppReady'             : onAppReady,
             'onDocumentStateChange'  : onDocumentStateChange,
             'onError'                : onError,
             'onOutdatedVersion'      : onOutdatedVersion,
@@ -510,6 +509,14 @@
             // 'onRequestSelectSpreadsheet': onRequestSelectSpreadsheet,
             'onRequestReferenceData': onRequestReferenceData,
             "onRequestOpen"         : onRequestOpen,
+
+            "onRequestHistoryData" : onRequestHistoryData,
+            "onRequestRename"      : onRequestRename,
+            "onRequestHistory"     : onRequestHistory,
+            "onRequestSendNotify"  : onRequestSendNotify,
+            "onRequestHistoryClose": onRequestHistoryClose,
+            "onRequestRestore"     : onRequestRestore,
+            // "onRequestSaveAs"     : onRequestSaveAs,
         };
 
         // {history}

@@ -195,19 +195,19 @@ function track()
 		7 => 'CorruptedForceSave',
 	];
 	$status        = $trackerStatus[$data->status];  // get status from the request body
-	$userAddress = $_GET["userAddress"] ?? 'asas';
-	$fileName    = basename($_GET["fileName"] ?? 'nonde');
+	$userAddress   = $_GET["userAddress"] ?? 'asas';
+	$fileName      = basename($_GET["fileName"] ?? 'nonde');
 	
 	sendlog("   CommandRequest status: ".$data->status, "webedior-ajax.log");
 	switch ($status) {
 		case "Editing":  // status == 1
 			if ($data->actions && $data->actions[0]->type == 0) {   // finished edit
 				$user = $data->actions[0]->userid;                  // the user who finished editing
-//				if (array_search($user, $data->users) === false) {
-					// create a command request with the forcasave method
-					$commandRequest = commandRequest("forcesave", $data->key);
-					sendlog("   CommandRequest forcesave: ".serialize($commandRequest), "webedior-ajax.log");
-//				}
+				//				if (array_search($user, $data->users) === false) {
+				// create a command request with the forcasave method
+				$commandRequest = commandRequest("forcesave", $data->key);
+				sendlog("   CommandRequest forcesave: ".serialize($commandRequest), "webedior-ajax.log");
+				//				}
 			}
 			break;
 		case "MustSave":  // status == 2
@@ -455,7 +455,7 @@ function download()
 		if ($jwtManager->isJwtEnabled() && $isEmbedded == null && $userAddress) {
 			$jwtHeader = $configManager->jwtHeader();
 			if (!empty(apache_request_headers()[$jwtHeader])) {
-				$token = $jwtManager->jwtDecode(mb_substr(apache_request_headers()[$jwtHeader],mb_strlen("Bearer ")));
+				$token = $jwtManager->jwtDecode(mb_substr(apache_request_headers()[$jwtHeader], mb_strlen("Bearer ")));
 				if (empty($token)) {
 					http_response_code(403);
 					die("Invalid JWT signature");

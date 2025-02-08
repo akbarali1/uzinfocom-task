@@ -510,5 +510,22 @@ final class DocumentController extends Controller
 		return view('document.upload');
 	}
 	
+	public function history(Request $request): void
+	{
+		Log::info("History: ".json_encode($request->all()));
+	}
+	
+	/**
+	 * @throws DocumentException
+	 */
+	public function rename(int $id, Request $request): JsonResponse
+	{
+		Log::info("Rename: ".json_encode($request->all()));
+		
+		$data = $this->service->rename($id, $request->get('newFileName'));
+		
+		return response()->json($data);
+	}
+	
 	
 }

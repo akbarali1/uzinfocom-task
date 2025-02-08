@@ -14,6 +14,7 @@ return array(
     'Symfony\\Component\\Serializer\\' => array($vendorDir . '/symfony/serializer'),
     'Symfony\\Component\\PropertyInfo\\' => array($vendorDir . '/symfony/property-info'),
     'Symfony\\Component\\PropertyAccess\\' => array($vendorDir . '/symfony/property-access'),
+    'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Example\\Views\\' => array($baseDir . '/src/views'),
     'Example\\Proxy\\' => array($baseDir . '/src/proxy'),
@@ -21,4 +22,5 @@ return array(
     'Example\\Format\\' => array($baseDir . '/src/format'),
     'Example\\Configuration\\' => array($baseDir . '/src/configuration'),
     'Example\\Common\\' => array($baseDir . '/src/common'),
+    'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
 );

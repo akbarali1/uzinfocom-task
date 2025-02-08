@@ -33,4 +33,11 @@ class DocumentException extends InternalException
 		);
 	}
 	
+	public static function renameError(): static
+	{
+		return static::new(
+			code: ExceptionCode::RenameError
+		);
+	}
+	
 }

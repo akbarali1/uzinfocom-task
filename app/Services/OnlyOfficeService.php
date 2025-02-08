@@ -27,7 +27,7 @@ final class OnlyOfficeService
 	{
 		$arr = [
 			"c"   => $method,
-			"key" => $key,
+			"key" => (string) $key,
 		];
 		
 		if ($meta) {
@@ -46,12 +46,6 @@ final class OnlyOfficeService
 				'content' => $data,
 			],
 		];
-		
-		//		if (mb_substr($documentCommandUrl, 0, mb_strlen("https")) === "https") {
-		//			if ($configManager->sslVerifyPeerModeEnabled()) {
-		//				$opts['ssl'] = ['verify_peer' => false, 'verify_peer_name' => false];
-		//			}
-		//		}
 		
 		$documentCommandUrl = 'http://'.config('office.local_url_office').'/command';
 		$context            = stream_context_create($opts);

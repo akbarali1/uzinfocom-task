@@ -84,7 +84,7 @@ final class DocEditorView extends View
 		// check if the Submit form button is displayed or not
 		$submitForm = $editorsMode != "view" && $user->id == "uid-1";
 		$mode       = $canEdit && $editorsMode != "view" ? "edit" : "view";  // define if the editing mode is edit or view
-		$type = empty($request["type"]) ? "desktop" : $request["type"];
+		$type       = empty($request["type"]) ? "desktop" : $request["type"];
 		
 		$templatesImageUrl = getTemplateImageUrl($filename); // templates image url in the "From Template" section
 		$createUrl         = getCreateUrl($filename, $user->id, $type);
@@ -223,7 +223,7 @@ final class DocEditorView extends View
 		
 		// users data for protect
 		$usersForProtect = $user->id != "uid-0" ? $userList->getUsersForProtect($user->id) : null;
-		$usersInfo = [];
+		$usersInfo       = [];
 		if ($user->id != 'uid-0') {
 			foreach ($userList->getAllUsers() as $userInfo) {
 				$u        = $userInfo;
@@ -232,7 +232,7 @@ final class DocEditorView extends View
 			}
 		}
 		echo '<pre>';
-		print_r($config);
+		print_r(json_encode($usersInfo));
 		echo '</pre>';
 		die();
 		// check if the secret key to generate token exists

@@ -158,19 +158,12 @@ function processSave($rawData, $fileName, $userAddress)
 		mkdir($verDir);  // if the path doesn't exist, create it
 		
 		// get the path to the previous file version and rename the storage path with it
-		rename(getStoragePath($fileName, $userAddress), $verDir.
-			DIRECTORY_SEPARATOR."prev".$curExt);
+		rename(getStoragePath($fileName, $userAddress), $verDir.DIRECTORY_SEPARATOR."prev".$curExt);
 		file_put_contents($storagePath, $newData, LOCK_EX);  // save file to the storage directory
 		
-		if ($changesData = file_get_contents(
-			$data->changesurl,
-			false,
-			stream_context_create(["http" => ["timeout" => 5]])
-		)
-		) {
+		if ($changesData = file_get_contents($data->changesurl, false, stream_context_create(["http" => ["timeout" => 5]]))) {
 			// save file changes to the diff.zip archive
-			file_put_contents($verDir.DIRECTORY_SEPARATOR.
-				"diff.zip", $changesData, LOCK_EX);
+			file_put_contents($verDir.DIRECTORY_SEPARATOR."diff.zip", $changesData, LOCK_EX);
 		}
 		
 		$histData = empty($data->changeshistory) ? null : $data->changeshistory;
@@ -179,8 +172,7 @@ function processSave($rawData, $fileName, $userAddress)
 		}
 		if (!empty($histData)) {
 			// write the history changes to the changes.json file
-			file_put_contents($verDir.
-				DIRECTORY_SEPARATOR."changes.json", $histData, LOCK_EX);
+			file_put_contents($verDir.DIRECTORY_SEPARATOR."changes.json", $histData, LOCK_EX);
 		}
 		// write the key value to the key.txt file
 		file_put_contents($verDir.
@@ -323,7 +315,7 @@ function commandRequest($method, $key, $meta = null)
 	
 	$jwtManager         = new JwtManager();
 	$documentCommandUrl = $configManager->documentServerCommandURL()->string();
-	$arr = [
+	$arr                = [
 		"c"   => $method,
 		"key" => $key,
 	];

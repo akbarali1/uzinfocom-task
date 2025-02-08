@@ -64,15 +64,20 @@ Route::middleware('auth')->group(function () {
 	 * @uses DocumentController::view()
 	 * @uses DocumentController::update()
 	 * @uses DocumentController::delete()
+	 * @uses DocumentController::history()
 	 */
 	Route::controller(DocumentController::class)->name('document.')->prefix('document')->group(function () {
+		
+		Route::any('/download', 'download')->name('download')->withoutMiddleware('auth'); # TODO: Bug fix for download user file
+		Route::any('/callback', 'callback')->name('callback')->withoutMiddleware('auth');
+		Route::any('/history', 'history')->name('history')->withoutMiddleware('auth');
+		Route::any('/{id}/rename', 'rename')->name('rename');
+		
 		Route::get('/', 'index')->name('index');
 		Route::get('/create', 'create')->name('create');
 		Route::get('/upload', 'upload')->name('upload');
 		Route::post('/upload-file', 'uploadFile')->name('uploadFile');
 		Route::post('/store', 'store')->name('store');
-		Route::any('/download', 'download')->name('download')->withoutMiddleware('auth'); # TODO: Bug fix for download user file
-		Route::any('/callback', 'callback')->name('callback')->withoutMiddleware('auth');
 		Route::get('/{id}/edit', 'edit')->name('edit');
 		Route::get('/{id}/view', 'view')->name('view');
 		Route::post('/{id}/update', 'update')->name('update');
