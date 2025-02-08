@@ -23,31 +23,32 @@ final class HomeController extends Controller
 	{
 		return view('home');
 	}
-
+	
 	public function test()
 	{
+		dd(unserialize('a:1:{s:5:"error";i:0;}'));
 		$token = env('ONLYOFFICE_JWT_SECRET'); // Yuqorida yaratilgan token
 		
-			$url = 'https://bug-free-disco-6rxv7qxjvpqhxq5r-8080.app.github.dev/coauthoring/command';
-			$data = [
-				'document' => [
-					'title' => 'My Document',
-					'url' => 'https://example.com/document.docx'
-				]
-			];
-
-			$options = [
-				'http' => [
-					'header'  => "Authorization: Bearer $token\r\n" .
-								"Content-Type: application/json\r\n",
-					'method'  => 'POST',
-					'content' => json_encode($data),
-				],
-			];
-
-			$context  = stream_context_create($options);
-			$result = file_get_contents($url, false, $context);
-			dd($result);
+		$url  = 'https://bug-free-disco-6rxv7qxjvpqhxq5r-8080.app.github.dev/coauthoring/command';
+		$data = [
+			'document' => [
+				'title' => 'My Document',
+				'url'   => 'https://example.com/document.docx',
+			],
+		];
+		
+		$options = [
+			'http' => [
+				'header'  => "Authorization: Bearer $token\r\n".
+					"Content-Type: application/json\r\n",
+				'method'  => 'POST',
+				'content' => json_encode($data),
+			],
+		];
+		
+		$context = stream_context_create($options);
+		$result  = file_get_contents($url, false, $context);
+		dd($result);
 		echo "testing";
 	}
 }

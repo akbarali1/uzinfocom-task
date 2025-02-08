@@ -5,6 +5,7 @@ namespace App\Services;
 
 use Akbarali\DataObject\DataObjectCollection;
 use App\ActionData\StoreDocumentActionData;
+use App\ActionData\UploadFileActionData;
 use App\DataObjects\DocumentDataObject;
 use App\DataObjects\UserDataObject;
 use App\Exceptions\DocumentException;
@@ -32,9 +33,9 @@ final class DocumentService
 	 * @param  iterable|null  $filters
 	 * @return DataObjectCollection<UserDataObject>
 	 */
-	public function paginate(int $page = 1, int $limit = 15, ?iterable $filters = null): DataObjectCollection
+	public function paginate(int $page = 1, int $limit = 15, ?iterable $filters = null, array $with = []): DataObjectCollection
 	{
-		$model = DocumentModel::applyEloquentFilters($filters, ['roles'])->latest();
+		$model = DocumentModel::applyEloquentFilters($filters, $with)->latest('documents.id');
 		$model->select(['documents.*']);
 		
 		$totalCount = $model->count();
@@ -95,5 +96,28 @@ final class DocumentService
 		}
 		
 		$model->delete();
+	}
+	
+	public function uploadFile(UploadFileActionData $actionData): void
+	{
+		/** @var DocumentModel $document */
+		$document = DocumentModel::query()->create([
+			"user_id"   => $actionData->userId,
+			"title"     => "File",
+			"file_name" => $actionData->file->getClientOriginalName(),
+			"file_type" => $actionData->file->getMimeType(),
+			"file_path" => 'none',
+			"file_size" => 0,
+		]);
+		$path     = storage_path('app/public/documents/word/user_'.$actionData->userId.'/document_'.$document->id.'/');
+		if (!$actionData->file->move($path, $document->file_name)) {
+			throw new \RuntimeException(sprintf('File "%s" was not created', $path));
+		}
+		
+		$document->update([
+			'file_path'      => $path,
+			"file_size"      => $actionData->file->getSize(),
+			"last_edited_at" => now(),
+		]);
 	}
 }

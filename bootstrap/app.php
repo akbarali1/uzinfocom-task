@@ -22,6 +22,11 @@ return Application::configure(basePath: dirname(__DIR__))
 			'permission'         => PermissionMiddleware::class,
 			'role_or_permission' => RoleOrPermissionMiddleware::class,
 		]);
+		$middleware->validateCsrfTokens(except: [
+			'document/callback',
+			'document/download',
+			'document/upload',
+		]);
 	})
 	->withExceptions(function (Exceptions $exceptions) {
 		$exceptions->render(function (InternalException|ActionDataException $e, Request $request) {

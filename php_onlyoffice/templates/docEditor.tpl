@@ -196,7 +196,7 @@
             xhr.send(JSON.stringify(data));
             xhr.onload = function () {
                 innerAlert(xhr.responseText);
-                innerAlert(JSON.parse(xhr.responseText.substring(xhr.responseText.indexOf("{"))).file, true);
+                {*innerAlert(JSON.parse(xhr.responseText.substring(xhr.responseText.indexOf('{'))).file, true);*}
             }
         };
 

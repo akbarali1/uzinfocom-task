@@ -21,15 +21,28 @@ use App\DataObjects\DocumentDataObject;
 class DocumentViewModel extends BaseViewModel
 {
 	public readonly int $id;
-	public string       $name;
-	public ?string      $email;
-	public ?string      $token;
+	public ?string      $fileName;
+	public int|string   $fileSize = 0;
+	public ?string      $createdAt;
+	public ?string      $lastEditedAt;
+	public ?string      $viewUrl;
+	public ?string      $editUrl;
+	public ?string      $downloadUrl;
+	public ?string      $deleteUrl;
+	public array        $config   = [];
 	
 	protected DataObjectBase|DocumentDataObject $_data;
 	
 	protected function populate(): void
 	{
-		$this->createdAt = $this->_data->createdAt->format('d.m.Y H:i');
+		$this->createdAt    = $this->_data->createdAt->format('d.m.Y H:i');
+		$this->lastEditedAt = $this->_data->lastEditedAt->format('d.m.Y H:i');
+		$this->fileSize     = formatSize((int) $this->fileSize);
+		
+		$this->viewUrl     = route('document.view', ['id' => $this->id]);
+		$this->downloadUrl = route('document.download', ['documentId' => $this->id]);
+		$this->editUrl     = route('document.edit', ['id' => $this->id]);
+		$this->deleteUrl   = route('document.delete', ['id' => $this->id]);
 	}
 	
 }

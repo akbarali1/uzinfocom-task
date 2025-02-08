@@ -15,8 +15,9 @@ return new class extends Migration {
 			$table->bigIncrements('user_id');
 			$table->bigIncrements('document_id');
 			$table->string('title');
+			$table->string('file_name')->nullable();
 			$table->string('description')->nullable();
-			$table->string('file_path')->nullable()->comment("Previous file path");
+			$table->string('file_path')->nullable();
 			$table->bigInteger('file_size')->nullable()->comment('File size in bytes');
 			$table->string('file_type')->nullable()->comment('File extension');
 			$table->string('action'); // create, update, delete

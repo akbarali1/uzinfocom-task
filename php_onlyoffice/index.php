@@ -45,7 +45,6 @@ function configure()
 
 function routers()
 {
-    die("Assalomu alaykum");
     // TODO: delete fallback.
     // In theory, the content type of the response should be declared inside the
     // router function. However, this statement isn't true for all routers, and
@@ -64,7 +63,6 @@ function routers()
     sendlog($url->string(), 'webedior-ajax.log');
 
     $path = $url->path();
-    die($path);
     if (!$path || $path === '/') {
         header('Content-Type: text/html; charset=utf-8');
         $view = new IndexView($_REQUEST);
@@ -73,7 +71,6 @@ function routers()
     }
     if (str_starts_with($path, '/editor')) {
         header('Content-Type: text/html; charset=utf-8');
-        die;
         $view = new DocEditorView($_REQUEST);
         $view->render();
         return;

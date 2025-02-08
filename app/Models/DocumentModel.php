@@ -7,6 +7,7 @@ use App\Filters\Trait\EloquentFilterTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -24,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property int                 $user_id
  * @property string              $title
  * @property ?string             $description
+ * @property string              $file_name
  * @property string              $file_path
  * @property int                 $file_size
  * @property ?string             $file_type
@@ -34,13 +36,14 @@ use Illuminate\Support\Carbon;
  */
 class DocumentModel extends Model
 {
-	use HasFactory, EloquentFilterTrait;
+	use HasFactory, EloquentFilterTrait, SoftDeletes;
 	
 	protected $table    = 'documents';
 	protected $fillable = [
 		'user_id',
 		'title',
 		'description',
+		'file_name',
 		'file_path',
 		'file_size',
 		'file_type',

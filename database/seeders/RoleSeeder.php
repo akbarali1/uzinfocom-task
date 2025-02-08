@@ -30,8 +30,8 @@ class RoleSeeder extends Seeder
 		}
 		
 		$adminRole = Role::query()->firstOrCreate(['name' => 'admin']);
-		$userRole  = Role::query()->firstOrCreate(['name' => 'user']);
 		$adminRole->syncPermissions($permissions);
+		$userRole = Role::query()->firstOrCreate(['name' => 'user']);
 		$userRole->syncPermissions([
 			'document.create',
 			'document.upload',

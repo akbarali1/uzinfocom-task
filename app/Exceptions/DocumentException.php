@@ -22,7 +22,14 @@ class DocumentException extends InternalException
 	public static function documentNotFound(): static
 	{
 		return static::new(
-			code: ExceptionCode::UserNotFound,
+			code: ExceptionCode::DocumentNotFound,
+		);
+	}
+	
+	public static function fileNotFound(): static
+	{
+		return static::new(
+			code: ExceptionCode::FileNotFound
 		);
 	}
 	
