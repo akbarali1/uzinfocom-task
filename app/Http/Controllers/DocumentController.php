@@ -155,9 +155,14 @@ final class DocumentController extends Controller
 					"feedback"   => false,  // the Feedback & Support menu button display
 					// adds the request for the forced file saving to the callback handler when saving the document
 					"forcesave"  => true,
+					"autosave"   => true,
 					"submitForm" => true,  // if the Submit form button is displayed or not
 					// settings for the Open file location menu button and upper right corner button
-					"goback"     => route('document.index'),
+					"goback"     => [
+						"blank" => false,
+						"text"  => "Open file location",
+						"url"   => route('document.index'),
+					],
 				],
 			],
 		];
@@ -255,26 +260,25 @@ final class DocumentController extends Controller
 						"text"  => "Open file location",
 						"url"   => route('document.index'),
 					],
-					"logo"       => [
-						"image"      => "https://uzinfocom.uz/_next/static/media/uzinfocom-logo.8612a388.svg",
-						"imageDark"  => "https://uzinfocom.uz/_next/static/media/uzinfocom-logo.8612a388.svg",
-						"imageLight" => "https://uzinfocom.uz/_next/static/media/uzinfocom-logo.8612a388.svg",
-						"text"       => "Open file location",
-						"url"        => route('document.index'),
-						"visible"    => true,
-					],
-					"customer"   => [
-						"address"  => "My City, 123a-45",
-						"info"     => "Some additional information",
-						"logo"     => "https://example.com/logo-big.png",
-						"logoDark" => "https://example.com/dark-logo-big.png",
-						"mail"     => "john@example.com",
-						"name"     => "John Smith and Co.",
-						"phone"    => "123456789",
-						"www"      => "example.com",
-					],
+					// "logo"       => [
+					// 	"image"      => "https://uzinfocom.uz/_next/static/media/uzinfocom-logo.8612a388.svg",
+					// 	"imageDark"  => "https://uzinfocom.uz/_next/static/media/uzinfocom-logo.8612a388.svg",
+					// 	"imageLight" => "https://uzinfocom.uz/_next/static/media/uzinfocom-logo.8612a388.svg",
+					// 	"text"       => "Open file location",
+					// 	"url"        => route('document.index'),
+					// 	"visible"    => true,
+					// ],
+					// "customer"   => [
+					// 	"address"  => "My City, 123a-45",
+					// 	"info"     => "Some additional information",
+					// 	"logo"     => "https://example.com/logo-big.png",
+					// 	"logoDark" => "https://example.com/dark-logo-big.png",
+					// 	"mail"     => "john@example.com",
+					// 	"name"     => "John Smith and Co.",
+					// 	"phone"    => "123456789",
+					// 	"www"      => "example.com",
+					// ],
 				],
-			
 			],
 		];
 		$viewModel   = DocumentViewModel::fromDataObject($documentData);
@@ -465,7 +469,11 @@ final class DocumentController extends Controller
 					"autosave"   => true,
 					"submitForm" => true,  // if the Submit form button is displayed or not
 					// settings for the Open file location menu button and upper right corner button
-					"goback"     => route('document.index'),
+					"goback"     => [
+						"blank" => false,
+						"text"  => "Open file location",
+						"url"   => route('document.index'),
+					],
 				],
 			],
 		];
