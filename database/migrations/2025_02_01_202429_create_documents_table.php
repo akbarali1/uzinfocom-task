@@ -15,6 +15,7 @@ return new class extends Migration {
 			$table->bigIncrements('user_id');
 			$table->string('title');
 			$table->string('description')->nullable();
+			$table->string('key')->nullable();
 			$table->string('file_name');
 			$table->string('file_path');
 			$table->bigInteger('file_size')->nullable()->comment('File size in bytes');

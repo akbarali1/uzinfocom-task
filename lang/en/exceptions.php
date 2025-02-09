@@ -40,5 +40,13 @@ return [
 		"message"     => "Hujjat topilmadi",
 		"description" => "Hujjat topilmadi. ",
 	],
+	'-2001' => [
+		"message"     => "Fayl topilmadi",
+		"description" => "Fayl mavjud emas.",
+	],
+	'-2002' => [
+		"message"     => "Nomni o'zgartirishda xatolik.",
+		"description" => "Fayl nomini o'zgartirib bo'lmadi",
+	],
 	#endregion
 ];

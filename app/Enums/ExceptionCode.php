@@ -21,6 +21,7 @@ enum ExceptionCode: int
 	case DocumentNotFound = -2000;
 	case FileNotFound     = -2001;
 	case RenameError      = -2002;
+	case FileUploadFailed = -2003;
 	
 	case RoleNotFound         = -1003;
 	case CannotDeleteLastUser = -1002;

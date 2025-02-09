@@ -380,7 +380,7 @@
         };
 
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", "rename");
+        xhr.open("POST", "{{ route('document.rename', ['id' =>$item->id ]) }}");
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(data));
         xhr.onload = function () {
@@ -391,10 +391,11 @@
     function onRequestHistory() {
         const query = new URLSearchParams(window.location.search)
         const data  = {
-            fileName: query.get('fileID')
+            fileName: query.get('fileID'),
+            _token  : "{{ csrf_token() }}"
         }
         const req   = new XMLHttpRequest()
-        req.open("POST", 'objhistory')
+        req.open("POST", "{{ route('document.historyObj', ['id' => $item->id ]) }}")
         req.setRequestHeader('Content-Type', 'application/json')
         req.send(JSON.stringify(data))
         req.onload = function () {
@@ -510,13 +511,14 @@
             'onRequestReferenceData': onRequestReferenceData,
             "onRequestOpen"         : onRequestOpen,
 
-            "onRequestHistoryData" : onRequestHistoryData,
-            "onRequestRename"      : onRequestRename,
-            "onRequestHistory"     : onRequestHistory,
-            "onRequestSendNotify"  : onRequestSendNotify,
-            "onRequestHistoryClose": onRequestHistoryClose,
-            "onRequestRestore"     : onRequestRestore,
+            "onRequestRename"    : onRequestRename,
+            "onRequestSendNotify": onRequestSendNotify,
+            "onRequestRestore"   : onRequestRestore,
             // "onRequestSaveAs"     : onRequestSaveAs,
+
+            "onRequestHistoryClose": onRequestHistoryClose,
+            "onRequestHistoryData" : onRequestHistoryData,
+            "onRequestHistory"     : onRequestHistory,
         };
 
         // {history}

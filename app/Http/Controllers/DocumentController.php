@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Akbarali\ActionData\ActionDataException;
-use Akbarali\ViewModel\EmptyData;
 use Akbarali\ViewModel\PaginationViewModel;
 use App\ActionData\StoreDocumentActionData;
 use App\ActionData\UploadFileActionData;
+use App\DataObjects\DocumentDataObject;
 use App\Exceptions\DocumentException;
 use App\Filters\UserDocumentFilter;
 use App\Models\DocumentModel;
@@ -15,7 +15,6 @@ use App\Models\UserModel;
 use App\Services\DocumentService;
 use App\Services\OnlyOfficeService;
 use App\ViewModels\DocumentViewModel;
-use Firebase\JWT\JWT;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -85,11 +84,12 @@ final class DocumentController extends Controller
 		$document->update([
 			'file_path' => $path,
 			'file_name' => $fileName,
+			"key"       => OnlyOfficeService::generateRevisionId($path.$fileName),
 		]);
 		
-		$directUrl         = str_replace(config('office.public_url'), config('office.local_url'), route('document.download', ['documentId' => $document->id]));
-		$callbackUrl       = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $document->id]));
-		$config            = [
+		$directUrl   = str_replace(config('office.public_url'), config('office.local_url'), route('document.download', ['documentId' => $document->id]));
+		$callbackUrl = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $document->id]));
+		$config      = [
 			"type"         => $type,
 			"documentType" => 'word',
 			"document"     => [
@@ -97,7 +97,7 @@ final class DocumentController extends Controller
 				"url"           => $directUrl,
 				"directUrl"     => "",
 				"fileType"      => 'docx',
-				"key"           => (string) $document->id,
+				"key"           => $document->key,
 				"info"          => [
 					"owner"    => $user->name,
 					"uploaded" => date('d.m.y'),
@@ -128,7 +128,7 @@ final class DocumentController extends Controller
 				],
 			],
 			"editorConfig" => [
-				"actionLink"    => !$request->has("actionLink") ? null : json_decode($request->get('actionLink')),
+				"actionLink"    => 'https://google.com/',
 				"mode"          => 'edit',
 				"lang"          => "en",
 				"callbackUrl"   => $callbackUrl,
@@ -161,9 +161,8 @@ final class DocumentController extends Controller
 				],
 			],
 		];
-		$config["token"]   = JWT::encode($config, env('ONLYOFFICE_JWT_SECRET'), 'HS256');
-		$viewModel         = DocumentViewModel::fromDataObject(EmptyData::fromArray([]));
-		$viewModel->config = $config;
+		$viewModel   = DocumentViewModel::fromDataObject(DocumentDataObject::fromModel($document));
+		$viewModel->setConfig($config);
 		
 		return $viewModel->toView('document.store');
 	}
@@ -178,26 +177,26 @@ final class DocumentController extends Controller
 		$user         = $request->user();
 		$type         = empty($request->get("type")) ? "desktop" : $request->get("type");
 		$documentData = $this->service->getDocument($id);
-		$path         = $documentData->filePath.$documentData->fileName;
+		$path         = $documentData->filePath.'Task.docx';
+		dd($path,!file_exists($path), !file_exists($documentData->filePath));
 		if (!file_exists($path)) {
 			throw DocumentException::fileNotFound();
 		}
 		
-		$directUrl         = str_replace(config('office.public_url'), config('office.local_url'), route('document.download', ['documentId' => $documentData->id]));
-		$callbackUrl       = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $documentData->id]));
-		$config            = [
+		$directUrl   = str_replace(config('office.public_url'), config('office.local_url'), route('document.download', ['documentId' => $documentData->id]));
+		$callbackUrl = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $documentData->id]));
+		$config      = [
 			"type"         => $type,
 			"documentType" => 'word',
 			"document"     => [
 				"title"         => $documentData->fileName,
 				"url"           => $directUrl,
-				"directUrl"     => "",
 				"fileType"      => 'docx',
-				"key"           => (string) $documentData->id,
+				"key"           => $documentData->key,
 				"info"          => [
 					"owner"    => $user->name,
-					"uploaded" => date('d.m.y'),
-					"favorite" => true,
+					"uploaded" => $documentData->createdAt->format('d.m.Y'),
+					//"favorite" => true,
 				],
 				"permissions"   => [
 					"comment"              => true,
@@ -279,9 +278,8 @@ final class DocumentController extends Controller
 			
 			],
 		];
-		$config["token"]   = JWT::encode($config, env('ONLYOFFICE_JWT_SECRET'), 'HS256');
-		$viewModel         = DocumentViewModel::fromDataObject(EmptyData::fromArray([]));
-		$viewModel->config = $config;
+		$viewModel   = DocumentViewModel::fromDataObject($documentData);
+		$viewModel->setConfig($config);
 		
 		return $viewModel->toView('document.store');
 	}
@@ -380,7 +378,6 @@ final class DocumentController extends Controller
 		switch ($status) {
 			case "Editing":  // status == 1
 				if (isset($request->get('actions')['0']['type']) && (int) $request->get('actions')['0']['type'] === 0) {   // finished edit
-					//$user           = $request->get('actions')[0]['userid'];
 					$commandRequest = OnlyOfficeService::commandRequest("forcesave", $request->get('key'));
 					Log::info($commandRequest);
 				}
@@ -390,33 +387,7 @@ final class DocumentController extends Controller
 				//				$result = processSave($data, $fileName, $userAddress);
 				//				break;
 			case "MustForceSave":  // status == 6
-				$url      = str_replace(config('office.public_url_office'), config('office.local_url_office'), $request->get('url'));
-				$document = DocumentModel::query()->find($request->get('key'));
-				if (is_null($document)) {
-					$response['status'] = 'success';
-					$response['error']  = 'Document not found';
-					
-					return response()->json($response);
-				}
-				$oldPath = $document->file_path.$document->file_name;
-				$newPath = $document->file_path."history_".time()."_".$document->file_name;
-				if (!rename($oldPath, $newPath)) {
-					$response['status'] = 'success';
-					$response['error']  = 'File rename error not found';
-					
-					return response()->json($response);
-				}
-				if (!copy($url, $oldPath)) {
-					$response['status'] = 'success';
-					$response['error']  = 'File copy error not found';
-					
-					return response()->json($response);
-				}
-				
-				$document->update([
-					"last_edited_at" => now(),
-					"file_size"      => filesize($oldPath),
-				]);
+				$this->service->saveCallbackFile($request);
 				break;
 			case "CorruptedForceSave":  // status == 7
 				//				$result = processForceSave($data, $fileName, $userAddress);
@@ -441,22 +412,23 @@ final class DocumentController extends Controller
 			throw DocumentException::fileNotFound();
 		}
 		
-		$directUrl         = str_replace(config('office.public_url_office'), config('office.local_url_office'), route('document.download', ['documentId' => $document->id]));
-		$config            = [
-			"type"         => 'docx',
+		$directUrl   = str_replace(config('office.public_url_office'), config('office.local_url_office'), route('document.download', ['documentId' => $document->id]));
+		$callbackUrl = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $document->id]));
+		$type        = empty($request->get("type")) ? "desktop" : $request->get("type");
+		$config      = [
+			"type"         => $type,
 			"documentType" => 'word',
 			"document"     => [
-				"title"       => $document->fileName,
-				"url"         => $directUrl,
-				"directUrl"   => "",
-				"fileType"    => 'docx',
-				"key"         => (string) $document->id,
-				"info"        => [
+				"title"         => $document->fileName,
+				"url"           => $directUrl,
+				"fileType"      => 'docx',
+				"key"           => $document->key,
+				"info"          => [
 					"owner"    => $user->name,
-					"uploaded" => date('d.m.y'),
-					"favorite" => true,
+					"uploaded" => $document->createdAt->format('d.m.Y'),
+					//"favorite" => true,
 				],
-				"permissions" => [
+				"permissions"   => [
 					"comment"      => false,
 					"copy"         => true,
 					"download"     => true,
@@ -471,12 +443,19 @@ final class DocumentController extends Controller
 				"actionLink"    => 'https://uzhackersw.uz',
 				"mode"          => 'edit',
 				"lang"          => "en",
+				"callbackUrl"   => $callbackUrl,
 				"coEditing"     => null,
 				"user"          => [  // the user currently viewing or editing the document
 					"id"    => 'u-'.$user->id,
 					"name"  => $user->name,
 					"group" => null,
 					"image" => 'https://uzhackersw.uz/images/cat.jpg',
+				],
+				"embedded"      => [  // the parameters for the embedded document type
+					"saveUrl"       => $directUrl,
+					"embedUrl"      => $directUrl,
+					"shareUrl"      => $directUrl,
+					"toolbarDocked" => "top",  // the place for the embedded viewer toolbar (top or bottom)
 				],
 				"customization" => [                                                                                                                                                                                                                                                                                                                                                                                                                                                    // the parameters for the editor interface
 					"about"      => true,
@@ -491,9 +470,8 @@ final class DocumentController extends Controller
 				],
 			],
 		];
-		$config["token"]   = JWT::encode($config, env('ONLYOFFICE_JWT_SECRET'), 'HS256');
-		$viewModel         = DocumentViewModel::fromDataObject(EmptyData::fromArray([]));
-		$viewModel->config = $config;
+		$viewModel   = DocumentViewModel::fromDataObject($document);
+		$viewModel->setConfig($config);
 		
 		return $viewModel->toView('document.store');
 	}
@@ -513,6 +491,15 @@ final class DocumentController extends Controller
 	public function history(Request $request): void
 	{
 		Log::info("History: ".json_encode($request->all()));
+	}
+	
+	public function historyObj(int $id, Request $request): JsonResponse
+	{
+		Log::info("History OBJ: ".json_encode($request->all()));
+		
+		$data = $this->service->getHistory($id);
+		
+		return response()->json($data);
 	}
 	
 	/**

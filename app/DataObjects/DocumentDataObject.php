@@ -22,6 +22,7 @@ class DocumentDataObject extends DataObjectBase
 	public readonly int     $id;
 	public readonly int     $userId;
 	public readonly string  $title;
+	public readonly string  $key;
 	public readonly ?string $description;
 	public readonly ?string $fileName;
 	public readonly ?string $filePath;

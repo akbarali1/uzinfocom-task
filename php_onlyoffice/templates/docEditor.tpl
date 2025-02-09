@@ -222,7 +222,7 @@
         function onRequestHistory() {
             const query = new URLSearchParams(window.location.search)
             const data = {
-                fileName: query.get('fileID')
+                fileName: query.get('fileID'),
             }
             const req = new XMLHttpRequest()
             req.open("POST", 'objhistory')

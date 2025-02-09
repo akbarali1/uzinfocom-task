@@ -24,6 +24,7 @@ use Illuminate\Support\Carbon;
  * @property int                 $id
  * @property int                 $user_id
  * @property string              $title
+ * @property string              $key
  * @property ?string             $description
  * @property string              $file_name
  * @property string              $file_path
@@ -31,6 +32,7 @@ use Illuminate\Support\Carbon;
  * @property ?string             $file_type
  * @property Carbon              $last_edited_at
  * @property Carbon              $created_at
+ * @property Carbon              $updated_at
  *
  * @property UserModel|BelongsTo $user
  */
@@ -43,6 +45,7 @@ class DocumentModel extends Model
 		'user_id',
 		'title',
 		'description',
+		'key',
 		'file_name',
 		'file_path',
 		'file_size',

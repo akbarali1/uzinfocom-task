@@ -175,8 +175,7 @@ function processSave($rawData, $fileName, $userAddress)
 			file_put_contents($verDir.DIRECTORY_SEPARATOR."changes.json", $histData, LOCK_EX);
 		}
 		// write the key value to the key.txt file
-		file_put_contents($verDir.
-			DIRECTORY_SEPARATOR."key.txt", $data->key, LOCK_EX);
+		file_put_contents($verDir.DIRECTORY_SEPARATOR."key.txt", $data->key, LOCK_EX);
 		
 		// get the path to the forcesaved file version
 		$forcesavePath = getForcesavePath($newFileName, $userAddress, false);

@@ -187,5 +187,15 @@ final class OnlyOfficeService
 		return $result;
 	}
 	
+	public static function generateRevisionId(string $expectedKey): string
+	{
+		if (mb_strlen($expectedKey) > 20) {
+			$expectedKey = crc32($expectedKey);
+		}  // if the expected key length is greater than 20, calculate the crc32 for it
+		$key = preg_replace("[^0-9-.a-zA-Z_=]", "_", (string) $expectedKey);
+		
+		return mb_substr($key, 0, min([mb_strlen($key), 20]));
+	}
+	
 	
 }

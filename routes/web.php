@@ -65,13 +65,16 @@ Route::middleware('auth')->group(function () {
 	 * @uses DocumentController::update()
 	 * @uses DocumentController::delete()
 	 * @uses DocumentController::history()
+	 * @uses DocumentController::historyObj()
 	 */
 	Route::controller(DocumentController::class)->name('document.')->prefix('document')->group(function () {
 		
 		Route::any('/download', 'download')->name('download')->withoutMiddleware('auth'); # TODO: Bug fix for download user file
 		Route::any('/callback', 'callback')->name('callback')->withoutMiddleware('auth');
 		Route::any('/history', 'history')->name('history')->withoutMiddleware('auth');
+		Route::any('/{id}/history-obj', 'historyObj')->name('historyObj');
 		Route::any('/{id}/rename', 'rename')->name('rename');
+		Route::get('/downloadHistory', 'downloadHistory')->name('downloadHistory');
 		
 		Route::get('/', 'index')->name('index');
 		Route::get('/create', 'create')->name('create');

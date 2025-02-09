@@ -23,7 +23,9 @@ use Illuminate\Support\Carbon;
  * @property int                     $id
  * @property int                     $user_id
  * @property string                  $title
+ * @property string                  $key
  * @property ?string                 $description
+ * @property string                  $file_name
  * @property string                  $file_path
  * @property int                     $file_size
  * @property ?string                 $file_type
@@ -42,7 +44,9 @@ class DocumentHistoryModel extends Model
 		'user_id',
 		'document_id',
 		'title',
+		'key',
 		'description',
+		'file_name',
 		'file_path',
 		'file_size',
 		'file_type',

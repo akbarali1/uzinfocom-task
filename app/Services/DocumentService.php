@@ -8,8 +8,11 @@ use App\ActionData\StoreDocumentActionData;
 use App\ActionData\UploadFileActionData;
 use App\DataObjects\DocumentDataObject;
 use App\Exceptions\DocumentException;
+use App\Models\DocumentHistoryModel;
 use App\Models\DocumentModel;
 use App\Models\UserModel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
@@ -73,9 +76,30 @@ final class DocumentService
 	 * @throws DocumentException
 	 * @return DocumentDataObject
 	 */
-	public function getDocument(int $id): DocumentDataObject
+	public function getDocument(int $id, array $with = []): DocumentDataObject
 	{
-		$model = DocumentModel::query()->find($id);
+		/** @var DocumentModel $model */
+		$model = DocumentModel::query()->with($with)->find($id);
+		if (is_null($model)) {
+			throw DocumentException::documentNotFound();
+		}
+		
+		$model->update([
+			'key' => OnlyOfficeService::generateRevisionId($model->file_path.$model->file_name),
+		]);
+		
+		return DocumentDataObject::fromModel($model);
+	}
+	
+	/**
+	 * @param  string  $key
+	 * @param  array   $with
+	 * @throws DocumentException
+	 * @return DocumentDataObject
+	 */
+	public function getDocumentByKey(string $key, array $with = []): DocumentDataObject
+	{
+		$model = DocumentModel::query()->with($with)->where('key', '=', $key)->first();
 		if (is_null($model)) {
 			throw DocumentException::documentNotFound();
 		}
@@ -99,6 +123,9 @@ final class DocumentService
 		$model->delete();
 	}
 	
+	/**
+	 * @throws DocumentException
+	 */
 	public function uploadFile(UploadFileActionData $actionData): void
 	{
 		/** @var DocumentModel $document */
@@ -112,13 +139,14 @@ final class DocumentService
 		]);
 		$path     = storage_path('app/public/documents/word/user_'.$actionData->userId.'/document_'.$document->id.'/');
 		if (!$actionData->file->move($path, $document->file_name)) {
-			throw new \RuntimeException(sprintf('File "%s" was not created', $path));
+			throw DocumentException::fileUploadFailed();
 		}
 		
 		$document->update([
 			'file_path'      => $path,
-			"file_size"      => $actionData->file->getSize(),
+			"file_size"      => filesize($path.$document->file_name),
 			"last_edited_at" => now(),
+			"key"            => OnlyOfficeService::generateRevisionId($path.$document->file_name),
 		]);
 	}
 	
@@ -156,4 +184,190 @@ final class DocumentService
 		return ["result" => json_decode($commandRequest, true, 512, JSON_THROW_ON_ERROR)];
 		
 	}
+	
+	public function saveCallbackFile(Request $request): array
+	{
+		$userId = (int) explode('-', $request->get('actions')[0]['userid'])[1];
+		/** @var DocumentModel $document */
+		$document = DocumentModel::query()->where('key', $request->get('key'))->first();
+		if (is_null($document)) {
+			$response['status'] = 'error';
+			$response['error']  = 'Document not found';
+			
+			return $response;
+		}
+		$oldPath     = $document->file_path.$document->file_name;
+		$newFileName = "history_"."_".$document->file_name;
+		$newPath     = $document->file_path.$newFileName;
+		if (!rename($oldPath, $newPath)) {
+			$response['status'] = 'error';
+			$response['error']  = 'File rename error not found';
+			
+			return $response;
+		}
+		$url     = str_replace(config('office.public_url_office'), config('office.local_url_office'), $request->get('url'));
+		$oldPath = $document->file_path.$document->id.'_'.date('Y_m_d_H_i_s').'.docx';
+		if (!copy($url, $oldPath)) {
+			$response['status'] = 'error';
+			$response['error']  = 'File copy error not found';
+			
+			return $response;
+		}
+		
+		DocumentHistoryModel::query()->create([
+			'user_id'     => $userId,
+			'document_id' => $document->id,
+			'title'       => $document->title,
+			'description' => $document->description,
+			'file_name'   => $newFileName,
+			'file_path'   => $document->file_path,
+			'file_size'   => filesize($newPath),
+			'file_type'   => $document->file_type,
+			'action'      => 'update',
+			'created_at'  => $document->created_at,
+			'updated_at'  => $document->updated_at,
+		]);
+		
+		$document->update([
+			"last_edited_at" => now(),
+			"file_size"      => filesize($oldPath),
+		]);
+		$response['status'] = 'success';
+		$response['error']  = 0;
+		
+		return $response;
+	}
+	
+	public function getHistory(int $id)
+	{
+		$document = $this->getDocument($id, ['user']);
+		
+		/** @var DocumentHistoryModel[]|Collection $history */
+		$history = DocumentHistoryModel::query()
+			->where('document_id', $document->id)
+			->oldest()
+			->get();
+		
+		if ($history->isEmpty()) {
+			return [
+				[
+					"currentVersion" => 1,
+					"history"        => [
+						"key"     => (string) $document->id,
+						"created" => $document->createdAt->format('Y-m-d H:i:s'),
+						"user"    => [
+							"id"   => 'u-'.$document->userId,
+							"name" => $document->user->name ?? "Unknown",
+						],
+					],
+				],
+				[
+					"fileType" => pathinfo($document->fileName, PATHINFO_EXTENSION),
+					"key"      => (string) $document->id,
+					"url"      => route('document.download', ['documentId' => $document->id]),
+					"version"  => 1,
+				],
+			];
+		}
+		
+		$curVer   = $history->count();
+		$hist     = [];
+		$histData = [];
+		
+		foreach ($history as $key => $historyItem) {
+			$version = $key + 1;
+			$obj     = [
+				"key"     => (string) $historyItem->id,
+				"version" => $version,
+				"created" => $historyItem->created_at->format('Y-m-d H:i:s'),
+				"user"    => [
+					"id"   => (string) $historyItem->user_id,
+					"name" => $historyItem->user->name ?? "Unknown",
+				],
+			];
+			if ($version > 1) {
+				$prevHistory    = $history[$key - 1];
+				$obj["changes"] = [
+					[
+						"created" => $historyItem->created_at->format('Y-m-d H:i:s'),
+						"user"    => [
+							"id"   => 'u-'.$historyItem->user_id,
+							"name" => $historyItem->user->name ?? "Unknown",
+						],
+					],
+				];
+			}
+			
+			$fileExtension = pathinfo($historyItem->file_path, PATHINFO_EXTENSION);
+			$fileUrl       = route('document.downloadHistory', ['documentId' => $document->id, 'version' => $version]);
+			$dataObj       = [
+				"fileType" => $fileExtension,
+				"key"      => (string) $historyItem->id,
+				"url"      => $fileUrl,
+				"version"  => $version,
+			];
+			
+			if ($version > 1) {
+				$prevData            = $histData[$key - 1];
+				$dataObj["previous"] = [
+					"fileType" => $prevData["fileType"],
+					"key"      => $prevData["key"],
+					"url"      => $prevData["url"],
+				];
+			}
+			
+			$hist[]         = $obj;
+			$histData[$key] = $dataObj;
+		}
+		
+		return [
+			[
+				
+				"currentVersion" => $curVer,
+				"history"        => $hist,
+			],
+			[
+				$histData,
+			],
+		];
+	}
+	
+	
+	//	public function getHistory(int $id)
+	//	{
+	//		$document = $this->getDocument($id);
+	//
+	//		/** @var DocumentHistoryModel[]|Collection $history */
+	//		$history = DocumentHistoryModel::query()
+	//			->where('document_id', $document->id)
+	//			->oldest()
+	//			->get();
+	//
+	//		$arr = [
+	//			[
+	//				'currentVersion' => $history->count(),
+	//				"history"        => [],
+	//			],
+	//			[],
+	//		];
+	//
+	//		foreach ($history as $key => $historyItem) {
+	//			$arr[0]['history'] = [
+	//				"key"     => $historyItem->id,
+	//				"version" => ($key + 1),
+	//				"created" => $historyItem->created_at->format('d.m.Y H:i:s'),
+	//				"history" => $history,
+	//			];
+	//			$arr[1]            = [
+	//				"fileType" => pathinfo($historyItem->file_name, PATHINFO_EXTENSION),
+	//				"version"  => ($key + 1),
+	//				"url"      => str_replace(config('office.public_url'), config('office.local_url'), route('document.downloadHistory', ['documentId' => $document->id])),
+	//				""
+	//			];
+	//		}
+	//
+	//		return $arr;
+	//
+	//
+	//	}
 }

@@ -40,4 +40,11 @@ class DocumentException extends InternalException
 		);
 	}
 	
+	public static function fileUploadFailed(): static
+	{
+		return static::new(
+			code: ExceptionCode::FileUploadFailed
+		);
+	}
+	
 }

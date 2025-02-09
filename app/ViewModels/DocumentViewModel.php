@@ -6,6 +6,7 @@ namespace App\ViewModels;
 use Akbarali\DataObject\DataObjectBase;
 use Akbarali\ViewModel\BaseViewModel;
 use App\DataObjects\DocumentDataObject;
+use Firebase\JWT\JWT;
 
 /**
  * Created by PhpStorm.
@@ -43,6 +44,12 @@ class DocumentViewModel extends BaseViewModel
 		$this->downloadUrl = route('document.download', ['documentId' => $this->id]);
 		$this->editUrl     = route('document.edit', ['id' => $this->id]);
 		$this->deleteUrl   = route('document.delete', ['id' => $this->id]);
+	}
+	
+	public function setConfig(array $config): void
+	{
+		$config["token"] = JWT::encode($config, env('ONLYOFFICE_JWT_SECRET'), 'HS256');
+		$this->config    = $config;
 	}
 	
 }
