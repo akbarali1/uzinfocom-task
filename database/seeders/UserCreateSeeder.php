@@ -30,7 +30,7 @@ class UserCreateSeeder extends Seeder
 		]);
 		
 		if (RoleModel::query()->where('name', 'user')->exists()) {
-			$admin->assignRole('user');
+			$user->assignRole('user');
 		}
 	}
 }

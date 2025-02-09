@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\UserModel;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -31,6 +30,7 @@ class RoleSeeder extends Seeder
 		
 		$adminRole = Role::query()->firstOrCreate(['name' => 'admin']);
 		$adminRole->syncPermissions($permissions);
+		
 		$userRole = Role::query()->firstOrCreate(['name' => 'user']);
 		$userRole->syncPermissions([
 			'document.create',
@@ -40,9 +40,9 @@ class RoleSeeder extends Seeder
 			'document.delete.own',
 		]);
 		
-		if (UserModel::query()->exists()) {
-			$admin = UserModel::query()->first();
-			$admin->assignRole('admin');
-		}
+		//		if (UserModel::query()->exists()) {
+		//			$admin = UserModel::query()->first();
+		//			$admin->assignRole('admin');
+		//		}
 	}
 }
