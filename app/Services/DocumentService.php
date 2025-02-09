@@ -205,8 +205,7 @@ final class DocumentService
 			
 			return $response;
 		}
-		$url     = str_replace(config('office.public_url_office'), config('office.local_url_office'), $request->get('url'));
-		$oldPath = $document->file_path.$document->id.'_'.date('Y_m_d_H_i_s').'.docx';
+		$url = str_replace(config('office.public_url_office'), config('office.local_url_office'), $request->get('url'));
 		if (!copy($url, $oldPath)) {
 			$response['status'] = 'error';
 			$response['error']  = 'File copy error not found';
@@ -238,6 +237,9 @@ final class DocumentService
 		return $response;
 	}
 	
+	/**
+	 * @throws DocumentException
+	 */
 	public function getHistory(int $id)
 	{
 		$document = $this->getDocument($id, ['user']);
@@ -253,7 +255,7 @@ final class DocumentService
 				[
 					"currentVersion" => 1,
 					"history"        => [
-						"key"     => (string) $document->id,
+						"key"     => (string) $document->key,
 						"created" => $document->createdAt->format('Y-m-d H:i:s'),
 						"user"    => [
 							"id"   => 'u-'.$document->userId,
@@ -263,7 +265,7 @@ final class DocumentService
 				],
 				[
 					"fileType" => pathinfo($document->fileName, PATHINFO_EXTENSION),
-					"key"      => (string) $document->id,
+					"key"      => (string) $document->key,
 					"url"      => route('document.download', ['documentId' => $document->id]),
 					"version"  => 1,
 				],

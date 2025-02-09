@@ -177,8 +177,7 @@ final class DocumentController extends Controller
 		$user         = $request->user();
 		$type         = empty($request->get("type")) ? "desktop" : $request->get("type");
 		$documentData = $this->service->getDocument($id);
-		$path         = $documentData->filePath.'Task.docx';
-		dd($path,!file_exists($path), !file_exists($documentData->filePath));
+		$path         = $documentData->filePath.$documentData->fileName;
 		if (!file_exists($path)) {
 			throw DocumentException::fileNotFound();
 		}
@@ -390,8 +389,8 @@ final class DocumentController extends Controller
 				$this->service->saveCallbackFile($request);
 				break;
 			case "CorruptedForceSave":  // status == 7
-				//				$result = processForceSave($data, $fileName, $userAddress);
-				//				break;
+				//$result = processForceSave($data, $fileName, $userAddress);
+				//break;
 		}
 		
 		$response["error"]  = 0;
@@ -419,16 +418,16 @@ final class DocumentController extends Controller
 			"type"         => $type,
 			"documentType" => 'word',
 			"document"     => [
-				"title"         => $document->fileName,
-				"url"           => $directUrl,
-				"fileType"      => 'docx',
-				"key"           => $document->key,
-				"info"          => [
+				"title"       => $document->fileName,
+				"url"         => $directUrl,
+				"fileType"    => 'docx',
+				"key"         => $document->key,
+				"info"        => [
 					"owner"    => $user->name,
 					"uploaded" => $document->createdAt->format('d.m.Y'),
 					//"favorite" => true,
 				],
-				"permissions"   => [
+				"permissions" => [
 					"comment"      => false,
 					"copy"         => true,
 					"download"     => true,
@@ -476,7 +475,10 @@ final class DocumentController extends Controller
 		return $viewModel->toView('document.store');
 	}
 	
-	public function uploadFile(UploadFileActionData $actionData)
+	/**
+	 * @throws DocumentException
+	 */
+	public function uploadFile(UploadFileActionData $actionData): RedirectResponse
 	{
 		$this->service->uploadFile($actionData);
 		
@@ -493,6 +495,9 @@ final class DocumentController extends Controller
 		Log::info("History: ".json_encode($request->all()));
 	}
 	
+	/**
+	 * @throws DocumentException
+	 */
 	public function historyObj(int $id, Request $request): JsonResponse
 	{
 		Log::info("History OBJ: ".json_encode($request->all()));
