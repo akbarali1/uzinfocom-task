@@ -231,10 +231,10 @@ final class DocEditorView extends View
 				array_push($usersInfo, $u);
 			}
 		}
-		echo '<pre>';
-		print_r(json_encode($usersInfo));
-		echo '</pre>';
-		die();
+//		echo '<pre>';
+//		print_r(json_encode($usersInfo));
+//		echo '</pre>';
+//		die();
 		// check if the secret key to generate token exists
 		if ($jwtManager->isJwtEnabled()) {
 			$config["token"] = $jwtManager->jwtEncode($config);  // encode config into the token
