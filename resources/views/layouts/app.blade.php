@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" {{--    class="light-style layout-menu-fixed" --}}
 class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default"
-       data-template="vertical-menu-template">
+      data-template="vertical-menu-template">
 
 <head>
     <meta charset="utf-8"/>
@@ -13,9 +13,15 @@ class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="
     <!-- Fonts -->
     @include('layouts.links')
     @yield('head')
+    @if(config('app.env') === 'development')
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css"/>
+    @endif
 </head>
 
 <body>
+@if(config('app.env') === 'development')
+    <a class="github-fork-ribbon left-bottom fixed" target="_blank" href="https://github.com/akbarali1/uzinfocom-task" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+@endif
 <!-- Layout wrapper -->
 <div class="layout-wrapper layout-content-navbar">
     <div class="layout-container">
