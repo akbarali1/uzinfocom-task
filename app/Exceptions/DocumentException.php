@@ -47,4 +47,11 @@ class DocumentException extends InternalException
 		);
 	}
 	
+	public static function extensionNotFound(): static
+	{
+		return static::new(
+			code: ExceptionCode::FileExtensionNotFound
+		);
+	}
+	
 }

@@ -18,10 +18,11 @@ namespace App\Enums;
  */
 enum ExceptionCode: int
 {
-	case DocumentNotFound = -2000;
-	case FileNotFound     = -2001;
-	case RenameError      = -2002;
-	case FileUploadFailed = -2003;
+	case DocumentNotFound      = -2000;
+	case FileNotFound          = -2001;
+	case RenameError           = -2002;
+	case FileUploadFailed      = -2003;
+	case FileExtensionNotFound = -2004;
 	
 	case Forbidden            = -1005;
 	case Unauthorized         = -1004;

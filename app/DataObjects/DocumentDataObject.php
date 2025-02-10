@@ -27,6 +27,7 @@ class DocumentDataObject extends DataObjectBase
 	public readonly ?string $fileName;
 	public readonly ?string $filePath;
 	public readonly ?string $fileSize;
+	public readonly string  $documentType;
 	public readonly ?string $fileType;
 	public readonly Carbon  $lastEditedAt;
 	public readonly Carbon  $createdAt;

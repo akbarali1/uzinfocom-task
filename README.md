@@ -24,6 +24,7 @@ server {
         root /var/www/html;
     }
 
+    client_max_body_size 30M;
     location / {
         proxy_pass http://127.0.0.1:8005; # Asosiy sayt 8005-portda ishlaydi
         proxy_set_header Host $host;
@@ -40,6 +41,7 @@ server {
         root /var/www/html;
     }
 
+    client_max_body_size 30M;
     location / {
         proxy_pass http://127.0.0.1:8080/; # 8080-portdagi xizmatga proxy
         proxy_http_version 1.1;

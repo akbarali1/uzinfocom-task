@@ -105,7 +105,7 @@ final class DocumentController extends Controller
 				"title"         => $document->file_name,
 				"url"           => $directUrl,
 				"directUrl"     => "",
-				"fileType"      => 'docx',
+				"fileType"      => $document->file_type,
 				"key"           => $document->key,
 				"info"          => [
 					"owner"    => $user->name,
@@ -200,11 +200,11 @@ final class DocumentController extends Controller
 		$callbackUrl = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $documentData->id]));
 		$config      = [
 			"type"         => $type,
-			"documentType" => 'word',
+			"documentType" => $documentData->documentType,
 			"document"     => [
 				"title"         => $documentData->fileName,
 				"url"           => $directUrl,
-				"fileType"      => 'docx',
+				"fileType"      => $documentData->fileType,
 				"key"           => $documentData->key.time(),
 				"info"          => [
 					"owner"    => $user->name,
@@ -370,11 +370,11 @@ final class DocumentController extends Controller
 		$type        = empty($request->get("type")) ? "desktop" : $request->get("type");
 		$config      = [
 			"type"         => $type,
-			"documentType" => 'word',
+			"documentType" => $document->documentType,
 			"document"     => [
 				"title"       => $document->fileName,
 				"url"         => $directUrl,
-				"fileType"    => 'docx',
+				"fileType"    => $document->fileType,
 				"key"         => $document->key.time(),
 				"info"        => [
 					"owner"    => $user->name,

@@ -110,7 +110,7 @@ final class DocumentService
 			"file_path" => 'none',
 			"file_size" => 0,
 		]);
-		$path     = storage_path('app/public/documents/word/user_'.$actionData->userId.'/document_'.$document->id.'/');
+		$path     = storage_path('app/public/documents/'.$document->document_type.'/user_'.$actionData->userId.'/document_'.$document->id.'/');
 		if (!$actionData->file->move($path, $document->file_name)) {
 			throw DocumentException::fileUploadFailed();
 		}

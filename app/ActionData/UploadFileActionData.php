@@ -28,7 +28,7 @@ class UploadFileActionData extends ActionDataBase
 		$this->userId = $this->getUser()->id;
 		$this->rules  = [
 			"userId" => "required|exists:users,id",
-			'file'   => 'required|file|mimes:doc,docx|max:10240',
+			'file'   => 'required|file|mimes:doc,docx,xls,xlsx,ppt,pptx,pdf|max:10240',
 		];
 	}
 	
