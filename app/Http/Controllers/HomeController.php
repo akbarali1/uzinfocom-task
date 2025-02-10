@@ -26,6 +26,8 @@ final class HomeController extends Controller
 	
 	public function test()
 	{
+		
+		dd(env('ONY_OFFICE_PUBLIC_URL'));
 		dd(unserialize('a:1:{s:5:"error";i:0;}'));
 		$token = env('ONLYOFFICE_JWT_SECRET'); // Yuqorida yaratilgan token
 		

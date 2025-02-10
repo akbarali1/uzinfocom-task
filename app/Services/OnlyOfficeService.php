@@ -5,6 +5,7 @@ namespace App\Services;
 
 use Exception;
 use Firebase\JWT\JWT;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -20,6 +21,10 @@ use Illuminate\Support\Facades\Log;
  */
 final class OnlyOfficeService
 {
+	public function __construct(
+		protected DocumentService $documentService
+	) {}
+	
 	/**
 	 * @throws Exception
 	 */
@@ -47,7 +52,7 @@ final class OnlyOfficeService
 			],
 		];
 		
-		$documentCommandUrl = 'http://'.config('office.local_url_office').'/command';
+		$documentCommandUrl = config('office.local_url_office').'/command';
 		$context            = stream_context_create($opts);
 		$responseData       = file_get_contents($documentCommandUrl, false, $context);
 		Log::info('commandRequest: '.$responseData);
@@ -195,6 +200,46 @@ final class OnlyOfficeService
 		$key = preg_replace("[^0-9-.a-zA-Z_=]", "_", (string) $expectedKey);
 		
 		return mb_substr($key, 0, min([mb_strlen($key), 20]));
+	}
+	
+	/**
+	 * @throws Exception
+	 */
+	public function callback(Request $request): array
+	{
+		$trackerStatus = [
+			0 => 'NotFound',
+			1 => 'Editing',
+			2 => 'MustSave',
+			3 => 'Corrupted',
+			4 => 'Closed',
+			6 => 'MustForceSave',
+			7 => 'CorruptedForceSave',
+		];
+		$status        = $trackerStatus[$request->get('status')];  // get status from the request body
+		switch ($status) {
+			case "Editing":  // status == 1
+				if (isset($request->get('actions')['0']['type']) && (int) $request->get('actions')['0']['type'] === 0) {   // finished edit
+					$commandRequest = self::commandRequest("forcesave", $request->get('key'));
+					Log::info($commandRequest);
+				}
+				break;
+			case "MustSave":  // status == 2
+			case "Corrupted":  // status == 3
+				//				$result = processSave($data, $fileName, $userAddress);
+				//				break;
+			case "MustForceSave":  // status == 6
+				$this->documentService->saveCallbackFile($request);
+				break;
+			case "CorruptedForceSave":  // status == 7
+				//$result = processForceSave($data, $fileName, $userAddress);
+				//break;
+		}
+		
+		$response["error"]  = 0;
+		$response['status'] = 'success';
+		
+		return $response;
 	}
 	
 	

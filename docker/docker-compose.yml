@@ -15,8 +15,8 @@ services:
     environment:
       - LARAVEL_RUN_LOCAL=laravel.local:8005 # Laravelning nig ichkaridan murojat qilishi uchun manzili
       - LARAVEL_RUN_PUBLIC_URL=localhost:8005 # Laravelning ning dockerdan tashqarida yurgazilgan manzili
-      - ONY_OFFICE_PUBLIC_URL=localhost:8080 # OnlyOffice ning localda yurgazilgan manzili
-      - ONY_OFFICE_LOCAL_URL=local.network:8080 # OnlyOffice ning docker ichida olishi mumkin bo'lgan manzil.
+      - ONY_OFFICE_PUBLIC_URL=http://office.webschool.uz # OnlyOffice ning localda yurgazilgan manzili
+      - ONY_OFFICE_LOCAL_URL=http://office.webschool.uz # OnlyOffice ning docker ichida olishi mumkin bo'lgan manzil.
     command: [ "/usr/local/bin/entrypoint.sh", "php-fpm" ]
     volumes:
       - ../:/var/www

@@ -72,7 +72,8 @@ final class DocumentService
 	}
 	
 	/**
-	 * @param  int  $id
+	 * @param  int    $id
+	 * @param  array  $with
 	 * @throws DocumentException
 	 * @return DocumentDataObject
 	 */
@@ -83,10 +84,9 @@ final class DocumentService
 		if (is_null($model)) {
 			throw DocumentException::documentNotFound();
 		}
-		
-		$model->update([
-			'key' => OnlyOfficeService::generateRevisionId($model->file_path.$model->file_name),
-		]);
+		//		$model->update([
+		//			'key' => OnlyOfficeService::generateRevisionId($model->file_path.$model->file_name),
+		//		]);
 		
 		return DocumentDataObject::fromModel($model);
 	}
@@ -189,7 +189,7 @@ final class DocumentService
 	{
 		$userId = (int) explode('-', $request->get('actions')[0]['userid'])[1];
 		/** @var DocumentModel $document */
-		$document = DocumentModel::query()->where('key', $request->get('key'))->first();
+		$document = DocumentModel::query()->find($request->get('documentId'));
 		if (is_null($document)) {
 			$response['status'] = 'error';
 			$response['error']  = 'Document not found';
@@ -240,7 +240,7 @@ final class DocumentService
 	/**
 	 * @throws DocumentException
 	 */
-	public function getHistory(int $id)
+	public function getHistory(int $id): array
 	{
 		$document = $this->getDocument($id, ['user']);
 		
@@ -334,42 +334,4 @@ final class DocumentService
 		];
 	}
 	
-	
-	//	public function getHistory(int $id)
-	//	{
-	//		$document = $this->getDocument($id);
-	//
-	//		/** @var DocumentHistoryModel[]|Collection $history */
-	//		$history = DocumentHistoryModel::query()
-	//			->where('document_id', $document->id)
-	//			->oldest()
-	//			->get();
-	//
-	//		$arr = [
-	//			[
-	//				'currentVersion' => $history->count(),
-	//				"history"        => [],
-	//			],
-	//			[],
-	//		];
-	//
-	//		foreach ($history as $key => $historyItem) {
-	//			$arr[0]['history'] = [
-	//				"key"     => $historyItem->id,
-	//				"version" => ($key + 1),
-	//				"created" => $historyItem->created_at->format('d.m.Y H:i:s'),
-	//				"history" => $history,
-	//			];
-	//			$arr[1]            = [
-	//				"fileType" => pathinfo($historyItem->file_name, PATHINFO_EXTENSION),
-	//				"version"  => ($key + 1),
-	//				"url"      => str_replace(config('office.public_url'), config('office.local_url'), route('document.downloadHistory', ['documentId' => $document->id])),
-	//				""
-	//			];
-	//		}
-	//
-	//		return $arr;
-	//
-	//
-	//	}
 }

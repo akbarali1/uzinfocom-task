@@ -62,7 +62,7 @@
     <div id="iframeEditor">
     </div>
 </div>
-<script type="text/javascript" src="http://localhost:8080//web-apps/apps/api/documents/api.js"></script>
+<script type="text/javascript" src="{{ config('office.public_url_office') }}/web-apps/apps/api/documents/api.js"></script>
 {{--<script type="text/javascript" language="javascript">
     var innerAlert = function (message, inEditor) {
         if (console && console.log)

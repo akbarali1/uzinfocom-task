@@ -34,23 +34,12 @@
                                 <td class="text-center">{{ $item->createdAt }}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a target="_blank" href="{{ $item->viewUrl }}" type="button" class="btn btn-warning btn-sm">@lang('form.view')</a>
-                                        <a target="_blank" href="{{ $item->editUrl }}" type="button" class="btn btn-success btn-sm">@lang('form.edit')</a>
-                                        <a target="_blank" href="{{ $item->downloadUrl }}" type="button" class="btn btn-info btn-sm">@lang('form.download')</a>
+                                        <a href="{{ $item->viewUrl }}" type="button" class="btn btn-warning btn-sm">@lang('form.view')</a>
+                                        <a href="{{ $item->editUrl }}" type="button" class="btn btn-success btn-sm">@lang('form.edit')</a>
+                                        <a href="{{ $item->downloadUrl }}" type="button" class="btn btn-info btn-sm">@lang('form.download')</a>
                                         <a data-action="delete" href="{{ $item->deleteUrl }}" type="button" class="btn btn-danger btn-sm">@lang('form.delete')</a>
                                     </div>
                                 </td>
-                                {{--                                <td>--}}
-                                {{--                                    <a href="{{ route('user.edit',$item->id) }}" class="btn btn-sm btn-info text-white">--}}
-                                {{--                                        @lang('form.edit')--}}
-                                {{--                                    </a>--}}
-                                {{--                                </td>--}}
-                                {{--                                <td>--}}
-                                {{--                                    <a href="{{ route('user.delete',$item->id) }}"--}}
-                                {{--                                       class="btn btn-sm btn-danger text-white" data-action="delete">--}}
-                                {{--                                        @lang('form.delete')--}}
-                                {{--                                    </a>--}}
-                                {{--                                </td>--}}
                             </tr>
                         @empty
                             <tr>

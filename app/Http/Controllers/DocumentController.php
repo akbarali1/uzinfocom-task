@@ -36,7 +36,8 @@ use Illuminate\Validation\ValidationException;
 final class DocumentController extends Controller
 {
 	public function __construct(
-		protected DocumentService $service
+		protected DocumentService $service,
+		protected OnlyOfficeService $onlyOfficeService
 	) {}
 	
 	/**
@@ -196,7 +197,7 @@ final class DocumentController extends Controller
 				"title"         => $documentData->fileName,
 				"url"           => $directUrl,
 				"fileType"      => 'docx',
-				"key"           => $documentData->key,
+				"key"           => $documentData->key.time(),
 				"info"          => [
 					"owner"    => $user->name,
 					"uploaded" => $documentData->createdAt->format('d.m.Y'),
@@ -367,38 +368,11 @@ final class DocumentController extends Controller
 	public function callback(Request $request): JsonResponse
 	{
 		Log::info("callback: ".json_encode($request->all()));
-		
-		$trackerStatus = [
-			0 => 'NotFound',
-			1 => 'Editing',
-			2 => 'MustSave',
-			3 => 'Corrupted',
-			4 => 'Closed',
-			6 => 'MustForceSave',
-			7 => 'CorruptedForceSave',
-		];
-		$status        = $trackerStatus[$request->get('status')];  // get status from the request body
-		switch ($status) {
-			case "Editing":  // status == 1
-				if (isset($request->get('actions')['0']['type']) && (int) $request->get('actions')['0']['type'] === 0) {   // finished edit
-					$commandRequest = OnlyOfficeService::commandRequest("forcesave", $request->get('key'));
-					Log::info($commandRequest);
-				}
-				break;
-			case "MustSave":  // status == 2
-			case "Corrupted":  // status == 3
-				//				$result = processSave($data, $fileName, $userAddress);
-				//				break;
-			case "MustForceSave":  // status == 6
-				$this->service->saveCallbackFile($request);
-				break;
-			case "CorruptedForceSave":  // status == 7
-				//$result = processForceSave($data, $fileName, $userAddress);
-				//break;
+		if (is_null($request->get('status'))) {
+			return response()->json([]);
 		}
 		
-		$response["error"]  = 0;
-		$response['status'] = 'success';
+		$response = $this->onlyOfficeService->callback($request);
 		
 		return response()->json($response);
 	}
@@ -425,7 +399,7 @@ final class DocumentController extends Controller
 				"title"       => $document->fileName,
 				"url"         => $directUrl,
 				"fileType"    => 'docx',
-				"key"         => $document->key,
+				"key"         => $document->key.time(),
 				"info"        => [
 					"owner"    => $user->name,
 					"uploaded" => $document->createdAt->format('d.m.Y'),
@@ -493,7 +467,7 @@ final class DocumentController extends Controller
 		return to_route('document.index')->with('message', trans('all.uploadFile'));
 	}
 	
-	public function upload(Request $request)
+	public function upload()
 	{
 		return view('document.upload');
 	}
@@ -526,6 +500,5 @@ final class DocumentController extends Controller
 		
 		return response()->json($data);
 	}
-	
 	
 }
