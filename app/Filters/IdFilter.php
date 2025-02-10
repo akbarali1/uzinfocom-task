@@ -4,45 +4,42 @@ declare(strict_types=1);
 namespace App\Filters;
 
 use App\Contracts\EloquentFilterContract;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Created by PhpStorm.
- * Filename: ${FILE_NAME}
+ * Filename: IdFilter.php
  * Project Name: uzinfocom-task
  * Author: akbarali
- * Date: 07/02/2025
- * Time: 22:54
- * Github: https://github.com/akbarali1
+ * Date: 10/02/2025
+ * Time: 21:59
+ * GitHub: https://github.com/akbarali1
  * Telegram: @akbar_aka
  * E-mail: me@akbarali.uz
  */
-class UserDocumentFilter implements EloquentFilterContract
+class IdFilter implements EloquentFilterContract
 {
 	protected function __construct(
-		protected int $userId = 0
+		protected int $id = 0
 	) {}
 	
 	
 	public function applyEloquent(Builder $model): Builder
 	{
-		if ($this->userId === 0) {
+		if ($this->id === 0) {
 			return $model;
 		}
+		
 		$table = $model->getModel()->getTable();
 		
-		return $model->where($table.'.user_id', '=', $this->userId);
+		return $model->where($table.'.id', '=', $this->id);
 	}
 	
-	public static function getFilterByUserRoles(User $user): static
+	public static function getFilter(): static
 	{
-		if ($user->hasRole('admin')) {
-			return new static(0);
-		}
-		
-		return new static($user->id);
+		return new self((int) request('id', 0));
 	}
+	
 	
 }
 

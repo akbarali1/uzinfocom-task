@@ -9,7 +9,10 @@ use App\ActionData\StoreDocumentActionData;
 use App\ActionData\UploadFileActionData;
 use App\DataObjects\DocumentDataObject;
 use App\Exceptions\DocumentException;
+use App\Filters\DateRangeFilter;
+use App\Filters\IdFilter;
 use App\Filters\UserDocumentFilter;
+use App\Filters\UserFilter;
 use App\Models\DocumentModel;
 use App\Models\UserModel;
 use App\Services\DocumentService;
@@ -48,12 +51,17 @@ final class DocumentController extends Controller
 	{
 		$filters = collect();
 		$filters->push(UserDocumentFilter::getFilterByUserRoles($request->user()));
-		$dataCollection = $this->service->paginate((int) $request->get('page', 1), 25, $filters, ['user']);
+		$filters->push(UserFilter::getFilter());
+		$filters->push(IdFilter::getFilter());
+		$filters->push(DateRangeFilter::getDateRangeFilter());
+		$dataCollection = $this->service->paginate((int) $request->get('page', 1), 20, $filters, ['user']);
 		
 		return new PaginationViewModel($dataCollection, DocumentViewModel::class)->toView('document.index');
 	}
 	
 	/**
+	 * @param  Request  $request
+	 * @throws \JsonException
 	 * @return View
 	 */
 	public function create(Request $request): View

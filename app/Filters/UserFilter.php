@@ -4,21 +4,20 @@ declare(strict_types=1);
 namespace App\Filters;
 
 use App\Contracts\EloquentFilterContract;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Created by PhpStorm.
- * Filename: ${FILE_NAME}
+ * Filename: UserFilter.php
  * Project Name: uzinfocom-task
  * Author: akbarali
- * Date: 07/02/2025
- * Time: 22:54
- * Github: https://github.com/akbarali1
+ * Date: 10/02/2025
+ * Time: 21:41
+ * GitHub: https://github.com/akbarali1
  * Telegram: @akbar_aka
  * E-mail: me@akbarali.uz
  */
-class UserDocumentFilter implements EloquentFilterContract
+class UserFilter implements EloquentFilterContract
 {
 	protected function __construct(
 		protected int $userId = 0
@@ -35,14 +34,11 @@ class UserDocumentFilter implements EloquentFilterContract
 		return $model->where($table.'.user_id', '=', $this->userId);
 	}
 	
-	public static function getFilterByUserRoles(User $user): static
+	public static function getFilter(): static
 	{
-		if ($user->hasRole('admin')) {
-			return new static(0);
-		}
-		
-		return new static($user->id);
+		return new self((int) request('user_id', 0));
 	}
+	
 	
 }
 

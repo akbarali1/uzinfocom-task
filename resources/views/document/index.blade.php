@@ -13,6 +13,35 @@
                     <h5 class="m-0">@lang('form.documents')</h5>
                 </div>
                 <div class="card-body">
+                    <div class="filters">
+                        <form action="" method="get">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <x-id-filter-component/>
+                                </div>
+                                <div class="col-md-2">
+                                    <x-user-filter/>
+                                </div>
+                                <div class="col-md-4">
+                                    <x-date-range-component/>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>&nbsp;</label><br>
+                                        <div class="btn-group">
+                                            <button class="btn btn-primary ">
+                                                @lang('form.search')
+                                            </button>
+                                            <a href="?" class="btn btn-info ">
+                                                @lang('form.clear')
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <hr>
                     <table class="table table-responsive-sm table-striped table-sm">
                         <thead>
                         <tr>
