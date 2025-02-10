@@ -364,7 +364,6 @@ final class DocumentController extends Controller
 		if (!file_exists($path)) {
 			throw DocumentException::fileNotFound();
 		}
-		
 		$directUrl   = str_replace(config('office.public_url_office'), config('office.local_url_office'), route('document.download', ['documentId' => $document->id]));
 		$callbackUrl = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $document->id]));
 		$type        = empty($request->get("type")) ? "desktop" : $request->get("type");
