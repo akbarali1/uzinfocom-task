@@ -62,6 +62,15 @@ server {
 
 If everything went well, the site should be up and running at http://localhost:8005.
 
+# What's up?
+
+1. Role management system `admin` and `user`
+2. Sending logs via Telegram bot and keeping daily logs to yourself.
+3. Create, edit, view, upload and delete word files using [OnlyOffice](https://www.onlyoffice.com/)
+4. A user can only view, edit, upload and delete files they have created.
+5. The administrator can create, upload, and view, delete, and edit Word files uploaded by other users.
+6. Only admins can create users.
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
