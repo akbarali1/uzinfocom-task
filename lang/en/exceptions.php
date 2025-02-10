@@ -34,6 +34,14 @@ return [
 		"message"     => "Rol topilmadi",
 		"description" => "Rol topilmaganda chiqadigan exception turi.",
 	],
+	'-1004' => [
+		"message"     => "Sizda kerakli huquqlar yo'q",
+		"description" => "Sizda buni qilish uchun kerakli huquqlar yo'q.",
+	],
+	'-1005' => [
+		"message"     => "Mehmonlar bu sahifaga kira olmaydi.",
+		"description" => "Siz tizimga kirishingiz kerak.",
+	],
 	#endregion
 	#region Document exceptions
 	'-2000' => [
@@ -47,6 +55,10 @@ return [
 	'-2002' => [
 		"message"     => "Nomni o'zgartirishda xatolik.",
 		"description" => "Fayl nomini o'zgartirib bo'lmadi",
+	],
+	'-2003' => [
+		"message"     => "Fayl yuklashda xatolik.",
+		"description" => "Fayl yuklashda xatolik.",
 	],
 	#endregion
 ];

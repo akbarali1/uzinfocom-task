@@ -71,17 +71,19 @@ Route::middleware('auth')->group(function () {
 		Route::any('/callback', 'callback')->name('callback')->withoutMiddleware('auth');
 		Route::any('/history', 'history')->name('history')->withoutMiddleware('auth');
 		Route::any('/{id}/history-obj', 'historyObj')->name('historyObj');
-		Route::any('/{id}/rename', 'rename')->name('rename');
-		Route::get('/downloadHistory', 'downloadHistory')->name('downloadHistory');
+		Route::get('/download-history', 'downloadHistory')->name('downloadHistory');
 		
-		Route::get('/', 'index')->name('index');
-		Route::get('/create', 'create')->name('create');
-		Route::get('/upload', 'upload')->name('upload');
-		Route::post('/upload-file', 'uploadFile')->name('uploadFile');
-		Route::get('/{id}/edit', 'edit')->name('edit');
-		Route::get('/{id}/view', 'view')->name('view');
-		Route::post('/{id}/update', 'update')->name('update');
-		Route::get('/{id}/delete', 'delete')->name('delete');
+		Route::middleware('document_check')->group(function () {
+			Route::get('/', 'index')->name('index');
+			Route::get('/create', 'create')->name('create');
+			Route::get('/upload', 'upload')->name('upload');
+			Route::post('/upload-file', 'uploadFile')->name('uploadFile');
+			Route::post('/{id}/rename', 'rename')->name('rename');
+			Route::get('/{id}/edit', 'edit')->name('edit');
+			Route::get('/{id}/view', 'view')->name('view');
+			Route::post('/{id}/update', 'update')->name('update');
+			Route::get('/{id}/delete', 'delete')->name('delete');
+		});
 	});
 });
 

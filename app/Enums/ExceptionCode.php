@@ -23,6 +23,8 @@ enum ExceptionCode: int
 	case RenameError      = -2002;
 	case FileUploadFailed = -2003;
 	
+	case Forbidden            = -1005;
+	case Unauthorized         = -1004;
 	case RoleNotFound         = -1003;
 	case CannotDeleteLastUser = -1002;
 	case StoreUserFailed      = -1001;

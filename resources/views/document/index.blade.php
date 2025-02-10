@@ -49,7 +49,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center">@lang('form.no_data')</td>
+                                <td colspan="7" class="text-center">@lang('form.no_data')</td>
                             </tr>
                         @endforelse
                         </tbody>
