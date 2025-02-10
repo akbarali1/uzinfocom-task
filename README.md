@@ -71,6 +71,16 @@ If everything went well, the site should be up and running at http://localhost:8
 5. The administrator can create, upload, and view, delete, and edit Word files uploaded by other users.
 6. Only admins can create users.
 
+# Here are the documentations I read on doing this.
+
+1. https://helpcenter.onlyoffice.com/installation/docs-developer-install-docker.aspx?from=api
+2. https://api.onlyoffice.com/docs/Docs%20API/Additional%20API/Command%20service/
+3. https://api.onlyoffice.com/docs/Docs%20API/Get%20Started/Language-specific%20examples/PHP%20example
+4. https://api.onlyoffice.com/docs/Docs%20API/Usage%20API/Callback%20handler
+5. https://api.onlyoffice.com/docs/Docs%20API/Usage%20API/Config/Events
+6. https://api.onlyoffice.com/docs/Docs%20API/Usage%20API/Config/Editor/
+7. https://github.com/ONLYOFFICE/document-server-integration/tree/master/web/documentserver-example/php
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

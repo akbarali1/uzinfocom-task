@@ -4,17 +4,14 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Akbarali\DataObject\DataObjectCollection;
-use App\ActionData\StoreDocumentActionData;
 use App\ActionData\UploadFileActionData;
 use App\DataObjects\DocumentDataObject;
 use App\Exceptions\DocumentException;
 use App\Models\DocumentHistoryModel;
 use App\Models\DocumentModel;
-use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 
 /**
  * Created by PhpStorm.
@@ -51,27 +48,6 @@ final class DocumentService
 	}
 	
 	/**
-	 * @param  StoreDocumentActionData  $actionData
-	 * @throws ValidationException
-	 * @return DocumentDataObject
-	 */
-	public function store(StoreDocumentActionData $actionData): DocumentDataObject
-	{
-		if (isset($actionData->id)) {
-			$model = DocumentModel::query()->find($actionData->id);
-			$actionData->addValidationRule('id', 'required|exists:documents,id');
-		} else {
-			$model = new UserModel();
-		}
-		$actionData->validateException();
-		
-		$model->fill($actionData->toArray(true));
-		$model->save();
-		
-		return DocumentDataObject::fromModel($model);
-	}
-	
-	/**
 	 * @param  int    $id
 	 * @param  array  $with
 	 * @throws DocumentException
@@ -84,9 +60,6 @@ final class DocumentService
 		if (is_null($model)) {
 			throw DocumentException::documentNotFound();
 		}
-		//		$model->update([
-		//			'key' => OnlyOfficeService::generateRevisionId($model->file_path.$model->file_name),
-		//		]);
 		
 		return DocumentDataObject::fromModel($model);
 	}
@@ -99,7 +72,7 @@ final class DocumentService
 	 */
 	public function getDocumentByKey(string $key, array $with = []): DocumentDataObject
 	{
-		$model = DocumentModel::query()->with($with)->where('key', '=', $key)->first();
+		$model = DocumentModel::query()->with($with)->firstWhere('key', '=', $key);
 		if (is_null($model)) {
 			throw DocumentException::documentNotFound();
 		}
@@ -182,7 +155,6 @@ final class DocumentService
 		Log::info("CommandRequest rename: ".$commandRequest);
 		
 		return ["result" => json_decode($commandRequest, true, 512, JSON_THROW_ON_ERROR)];
-		
 	}
 	
 	public function saveCallbackFile(Request $request): array

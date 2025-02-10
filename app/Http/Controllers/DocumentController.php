@@ -48,7 +48,7 @@ final class DocumentController extends Controller
 	{
 		$filters = collect();
 		$filters->push(UserDocumentFilter::getFilterByUserRoles($request->user()));
-		$dataCollection = $this->service->paginate((int) $request->get('page', 1), 25, $filters);
+		$dataCollection = $this->service->paginate((int) $request->get('page', 1), 25, $filters, ['user']);
 		
 		return new PaginationViewModel($dataCollection, DocumentViewModel::class)->toView('document.index');
 	}
@@ -261,24 +261,6 @@ final class DocumentController extends Controller
 						"text"  => "Open file location",
 						"url"   => route('document.index'),
 					],
-					// "logo"       => [
-					// 	"image"      => "https://uzinfocom.uz/_next/static/media/uzinfocom-logo.8612a388.svg",
-					// 	"imageDark"  => "https://uzinfocom.uz/_next/static/media/uzinfocom-logo.8612a388.svg",
-					// 	"imageLight" => "https://uzinfocom.uz/_next/static/media/uzinfocom-logo.8612a388.svg",
-					// 	"text"       => "Open file location",
-					// 	"url"        => route('document.index'),
-					// 	"visible"    => true,
-					// ],
-					// "customer"   => [
-					// 	"address"  => "My City, 123a-45",
-					// 	"info"     => "Some additional information",
-					// 	"logo"     => "https://example.com/logo-big.png",
-					// 	"logoDark" => "https://example.com/dark-logo-big.png",
-					// 	"mail"     => "john@example.com",
-					// 	"name"     => "John Smith and Co.",
-					// 	"phone"    => "123456789",
-					// 	"www"      => "example.com",
-					// ],
 				],
 			],
 		];
@@ -286,20 +268,6 @@ final class DocumentController extends Controller
 		$viewModel->setConfig($config);
 		
 		return $viewModel->toView('document.store');
-	}
-	
-	/**
-	 * @param  Request  $request
-	 * @throws ActionDataException
-	 * @throws ValidationException
-	 * @return RedirectResponse
-	 */
-	public function store(Request $request): RedirectResponse
-	{
-		$request->request->set('user_id', $request->user()->id);
-		$this->service->store(StoreDocumentActionData::fromRequest($request));
-		
-		return to_route('document.index')->with('message', trans('all.saved'));
 	}
 	
 	/**

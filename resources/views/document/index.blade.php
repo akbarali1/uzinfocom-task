@@ -18,6 +18,7 @@
                         <tr>
                             <th class="b-t-0">ID</th>
                             <th class="b-t-0">@lang('form.fileName')</th>
+                            <th class="b-t-0">@lang('form.author')</th>
                             <th class="b-t-0">@lang('form.fileSize')</th>
                             <th class="b-t-0 text-center">@lang('form.edited_at')</th>
                             <th class="b-t-0 text-center">@lang('form.created_at')</th>
@@ -29,6 +30,11 @@
                             <tr>
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->fileName }}</td>
+                                <td class="text-center">
+                                    <span class="badge text-bg-success">
+                                        {{ $item->authorName }}
+                                    </span>
+                                </td>
                                 <td>{{ $item->fileSize }}</td>
                                 <td class="text-center">{{ $item->lastEditedAt }}</td>
                                 <td class="text-center">{{ $item->createdAt }}</td>

@@ -58,7 +58,7 @@ class DocumentModel extends Model
 	];
 	
 	#region Relations
-	public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+	public function user(): BelongsTo
 	{
 		return $this->belongsTo(UserModel::class, 'user_id', 'id');
 	}

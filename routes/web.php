@@ -57,7 +57,6 @@ Route::middleware('auth')->group(function () {
 	 * @uses DocumentController::create()
 	 * @uses DocumentController::upload()
 	 * @uses DocumentController::uploadFile()
-	 * @uses DocumentController::store()
 	 * @uses DocumentController::download()
 	 * @uses DocumentController::callback()
 	 * @uses DocumentController::edit()
@@ -79,7 +78,6 @@ Route::middleware('auth')->group(function () {
 		Route::get('/create', 'create')->name('create');
 		Route::get('/upload', 'upload')->name('upload');
 		Route::post('/upload-file', 'uploadFile')->name('uploadFile');
-		Route::post('/store', 'store')->name('store');
 		Route::get('/{id}/edit', 'edit')->name('edit');
 		Route::get('/{id}/view', 'view')->name('view');
 		Route::post('/{id}/update', 'update')->name('update');

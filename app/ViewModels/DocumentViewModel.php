@@ -22,6 +22,7 @@ use Firebase\JWT\JWT;
 class DocumentViewModel extends BaseViewModel
 {
 	public readonly int $id;
+	public ?string      $authorName;
 	public ?string      $fileName;
 	public int|string   $fileSize = 0;
 	public ?string      $createdAt;
@@ -44,6 +45,8 @@ class DocumentViewModel extends BaseViewModel
 		$this->downloadUrl = route('document.download', ['documentId' => $this->id]);
 		$this->editUrl     = route('document.edit', ['id' => $this->id]);
 		$this->deleteUrl   = route('document.delete', ['id' => $this->id]);
+		
+		$this->authorName = $this->_data?->user?->name;
 	}
 	
 	public function setConfig(array $config): void
