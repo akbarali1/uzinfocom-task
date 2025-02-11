@@ -41,3 +41,4 @@ yarn-error.log
 /docker/pgdata/*
 /php_onlyoffice/storage/
 /php_onlyoffice/.idea/
+/php_onlyoffice/PHP Example/
