@@ -14,7 +14,6 @@ use App\Filters\IdFilter;
 use App\Filters\UserDocumentFilter;
 use App\Filters\UserFilter;
 use App\Models\DocumentModel;
-use App\Models\UserModel;
 use App\Services\DocumentService;
 use App\Services\OnlyOfficeService;
 use App\ViewModels\DocumentViewModel;
@@ -61,13 +60,11 @@ final class DocumentController extends Controller
 	
 	/**
 	 * @param  Request  $request
-	 * @throws \JsonException
 	 * @return View
 	 */
 	public function create(Request $request): View
 	{
 		$user = $request->user();
-		$type = empty($request->get("type")) ? "desktop" : $request->get("type");
 		$file = public_path("/files/empty.docx");
 		/** @var DocumentModel $document */
 		$document = DocumentModel::query()->create([
@@ -96,186 +93,27 @@ final class DocumentController extends Controller
 			"key"       => OnlyOfficeService::generateRevisionId($path.$fileName),
 		]);
 		
-		$directUrl   = str_replace(config('office.public_url'), config('office.local_url'), route('document.download', ['documentId' => $document->id]));
-		$callbackUrl = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $document->id]));
-		$config      = [
-			"type"         => $type,
-			"documentType" => 'word',
-			"document"     => [
-				"title"         => $document->file_name,
-				"url"           => $directUrl,
-				"directUrl"     => "",
-				"fileType"      => $document->file_type,
-				"key"           => $document->key,
-				"info"          => [
-					"owner"    => $user->name,
-					"uploaded" => date('d.m.y'),
-					"favorite" => true,
-				],
-				"permissions"   => [
-					"comment"              => true,
-					"copy"                 => true,
-					"download"             => true,
-					"edit"                 => true,
-					"print"                => true,
-					"fillForms"            => true,
-					"modifyFilter"         => true,
-					"modifyContentControl" => true,
-					"review"               => false,
-					"chat"                 => false,
-					"reviewGroups"         => false,
-					"commentGroups"        => false,
-					"userInfoGroups"       => false,
-					"protect"              => false,
-				],
-				"referenceData" => [
-					"fileKey"    => json_encode([
-						"fileName"    => $document->file_name,
-						"userAddress" => $request->getClientIp(),
-					], JSON_THROW_ON_ERROR),
-					"instanceId" => 'http://localhost:8005',
-				],
-			],
-			"editorConfig" => [
-				"actionLink"    => 'https://google.com/',
-				"mode"          => 'edit',
-				"lang"          => "en",
-				"callbackUrl"   => $callbackUrl,
-				"createUrl"     => url(),
-				"coEditing"     => null,
-				//				"createUrl"     => $user->id != "uid-0" ? $createUrl : null,
-				//				"templates"     => $user->templates ? $templates : null,
-				"user"          => [  // the user currently viewing or editing the document
-					"id"    => 'u-'.$user->id,
-					"name"  => $user->name,
-					"group" => null,
-					"image" => 'https://uzhackersw.uz/images/cat.jpg',
-				],
-				"embedded"      => [  // the parameters for the embedded document type
-					"saveUrl"       => $directUrl,
-					"embedUrl"      => $directUrl,
-					"shareUrl"      => $directUrl,
-					"toolbarDocked" => "top",  // the place for the embedded viewer toolbar (top or bottom)
-				],
-				"customization" => [                                                                                                                                                                                                                                                                                                                                                                                                                                                    // the parameters for the editor interface
-					"about"      => true,
-					// the About section display
-					"comments"   => true,
-					"feedback"   => false,  // the Feedback & Support menu button display
-					// adds the request for the forced file saving to the callback handler when saving the document
-					"forcesave"  => true,
-					"autosave"   => true,
-					"submitForm" => true,  // if the Submit form button is displayed or not
-					// settings for the Open file location menu button and upper right corner button
-					"goback"     => [
-						"blank" => false,
-						"text"  => "Open file location",
-						"url"   => route('document.index'),
-					],
-				],
-			],
-		];
-		$viewModel   = DocumentViewModel::fromDataObject(DocumentDataObject::fromModel($document));
-		$viewModel->setConfig($config);
-		
-		return $viewModel->toView('document.store');
+		return DocumentViewModel::fromDataObject(DocumentDataObject::fromModel($document))->setCreateConfig()->toView('document.store');
 	}
 	
 	/**
 	 * @throws DocumentException
-	 * @throws \JsonException
 	 */
-	public function edit(int $id, Request $request): View
+	public function edit(int $id): View
 	{
-		/** @var UserModel $user */
-		$user         = $request->user();
-		$type         = empty($request->get("type")) ? "desktop" : $request->get("type");
 		$documentData = $this->service->getDocument($id);
-		$path         = $documentData->filePath.$documentData->fileName;
-		if (!file_exists($path)) {
-			throw DocumentException::fileNotFound();
-		}
 		
-		$directUrl   = str_replace(config('office.public_url'), config('office.local_url'), route('document.download', ['documentId' => $documentData->id]));
-		$callbackUrl = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $documentData->id]));
-		$config      = [
-			"type"         => $type,
-			"documentType" => $documentData->documentType,
-			"document"     => [
-				"title"         => $documentData->fileName,
-				"url"           => $directUrl,
-				"fileType"      => $documentData->fileType,
-				"key"           => $documentData->key.time(),
-				"info"          => [
-					"owner"    => $user->name,
-					"uploaded" => $documentData->createdAt->format('d.m.Y'),
-					//"favorite" => true,
-				],
-				"permissions"   => [
-					"comment"              => true,
-					"copy"                 => true,
-					"download"             => true,
-					"edit"                 => true,
-					"print"                => true,
-					"fillForms"            => true,
-					"modifyFilter"         => true,
-					"modifyContentControl" => true,
-					"review"               => false,
-					"chat"                 => false,
-					"reviewGroups"         => false,
-					"commentGroups"        => false,
-					"userInfoGroups"       => false,
-					"protect"              => false,
-				],
-				"referenceData" => [
-					"fileKey"    => json_encode([
-						"fileName"    => $documentData->fileName,
-						"userAddress" => $request->getClientIp(),
-					], JSON_THROW_ON_ERROR),
-					"instanceId" => 'http://localhost:8005',
-				],
-			],
-			"editorConfig" => [
-				"actionLink"    => !$request->has("actionLink") ? null : json_decode($request->get('actionLink')),
-				"mode"          => 'edit',
-				"lang"          => "en",
-				"callbackUrl"   => $callbackUrl,
-				"createUrl"     => route('document.create'),
-				"coEditing"     => null,
-				"user"          => [  // the user currently viewing or editing the document
-					"id"    => 'u-'.$user->id,
-					"name"  => $user->name,
-					"group" => null,
-					"image" => 'https://uzhackersw.uz/images/cat.jpg',
-				],
-				"embedded"      => [  // the parameters for the embedded document type
-					"saveUrl"       => $directUrl,
-					"embedUrl"      => $directUrl,
-					"shareUrl"      => $directUrl,
-					"toolbarDocked" => "top",  // the place for the embedded viewer toolbar (top or bottom)
-				],
-				"customization" => [                                                                                                                                                                                                                                                                                                                                                                                                                                                    // the parameters for the editor interface
-					"about"      => true,
-					// the About section display
-					"comments"   => true,
-					"feedback"   => false,  // the Feedback & Support menu button display
-					// adds the request for the forced file saving to the callback handler when saving the document
-					"forcesave"  => true,
-					"autosave"   => true,
-					"submitForm" => true,  // if the Submit form button is displayed or not
-					// settings for the Open file location menu button and upper right corner button
-					"goback"     => [
-						"blank" => false,
-						"text"  => "Open file location",
-						"url"   => route('document.index'),
-					],
-				],
-			],
-		];
-		$viewModel   = DocumentViewModel::fromDataObject($documentData);
-		$viewModel->setConfig($config);
+		return DocumentViewModel::fromDataObject($documentData)->setEditConfig()->toView('document.store');
+	}
+	
+	/**
+	 * @throws DocumentException
+	 */
+	public function view(int $id): View
+	{
+		$document = $this->service->getDocument($id);
 		
-		return $viewModel->toView('document.store');
+		return DocumentViewModel::fromDataObject($document)->setViewConfig()->toView('document.store');
 	}
 	
 	/**
@@ -326,15 +164,9 @@ final class DocumentController extends Controller
 		}
 		$documentData = $this->service->getDocument((int) $documentId);
 		
-		$fullPath = $documentData->filePath.$documentData->fileName;
-		if (!file_exists($fullPath)) {
-			$response['status'] = 'success';
-			$response['error']  = 'File not found';
-			
-			return response()->json($response);
-		}
+		OnlyOfficeService::downloadFile($documentData->filePath.$documentData->fileName);
 		
-		OnlyOfficeService::downloadFile($fullPath);
+		return null;
 	}
 	
 	/**
@@ -351,85 +183,6 @@ final class DocumentController extends Controller
 		$response = $this->onlyOfficeService->callback($request);
 		
 		return response()->json($response);
-	}
-	
-	/**
-	 * @throws DocumentException
-	 */
-	public function view(int $id, Request $request): View
-	{
-		$document = $this->service->getDocument($id);
-		$user     = $request->user();
-		$path     = $document->filePath.$document->fileName;
-		if (!file_exists($path)) {
-			throw DocumentException::fileNotFound();
-		}
-		$directUrl   = str_replace(config('office.public_url_office'), config('office.local_url_office'), route('document.download', ['documentId' => $document->id]));
-		$callbackUrl = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $document->id]));
-		$type        = empty($request->get("type")) ? "desktop" : $request->get("type");
-		$config      = [
-			"type"         => $type,
-			"documentType" => $document->documentType,
-			"document"     => [
-				"title"       => $document->fileName,
-				"url"         => $directUrl,
-				"fileType"    => $document->fileType,
-				"key"         => $document->key.time(),
-				"info"        => [
-					"owner"    => $user->name,
-					"uploaded" => $document->createdAt->format('d.m.Y'),
-					//"favorite" => true,
-				],
-				"permissions" => [
-					"comment"      => false,
-					"copy"         => true,
-					"download"     => true,
-					"edit"         => false,
-					"chat"         => false,
-					"print"        => true,
-					"review"       => false,
-					"modifyFilter" => true,
-				],
-			],
-			"editorConfig" => [
-				"actionLink"    => 'https://uzhackersw.uz',
-				"mode"          => 'edit',
-				"lang"          => "en",
-				"callbackUrl"   => $callbackUrl,
-				"coEditing"     => null,
-				"user"          => [  // the user currently viewing or editing the document
-					"id"    => 'u-'.$user->id,
-					"name"  => $user->name,
-					"group" => null,
-					"image" => 'https://uzhackersw.uz/images/cat.jpg',
-				],
-				"embedded"      => [  // the parameters for the embedded document type
-					"saveUrl"       => $directUrl,
-					"embedUrl"      => $directUrl,
-					"shareUrl"      => $directUrl,
-					"toolbarDocked" => "top",  // the place for the embedded viewer toolbar (top or bottom)
-				],
-				"customization" => [                                                                                                                                                                                                                                                                                                                                                                                                                                                    // the parameters for the editor interface
-					"about"      => true,
-					"comments"   => true,
-					"feedback"   => false,  // the Feedback & Support menu button display
-					// adds the request for the forced file saving to the callback handler when saving the document
-					"forcesave"  => true,
-					"autosave"   => true,
-					"submitForm" => true,  // if the Submit form button is displayed or not
-					// settings for the Open file location menu button and upper right corner button
-					"goback"     => [
-						"blank" => false,
-						"text"  => "Open file location",
-						"url"   => route('document.index'),
-					],
-				],
-			],
-		];
-		$viewModel   = DocumentViewModel::fromDataObject($document);
-		$viewModel->setConfig($config);
-		
-		return $viewModel->toView('document.store');
 	}
 	
 	/**

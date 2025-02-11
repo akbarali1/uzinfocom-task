@@ -61,6 +61,11 @@ final class DocumentService
 			throw DocumentException::documentNotFound();
 		}
 		
+		$path = $model->file_path.$model->file_name;
+		if (!file_exists($path)) {
+			throw DocumentException::fileNotFound();
+		}
+		
 		return DocumentDataObject::fromModel($model);
 	}
 	
@@ -106,7 +111,7 @@ final class DocumentService
 			"user_id"   => $actionData->userId,
 			"title"     => "File",
 			"file_name" => $actionData->file->getClientOriginalName(),
-			"file_type" => $actionData->file->getMimeType(),
+			"file_type" => $actionData->file->getClientOriginalExtension(),
 			"file_path" => 'none',
 			"file_size" => 0,
 		]);
