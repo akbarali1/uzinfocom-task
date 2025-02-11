@@ -40,3 +40,4 @@ yarn-error.log
 /docker/DocumentServer/logs/*
 /docker/pgdata/*
 /php_onlyoffice/storage/
+/php_onlyoffice/.idea/
