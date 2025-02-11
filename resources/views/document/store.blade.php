@@ -1,6 +1,11 @@
-<!DOCTYPE html>
+<?php
+/**
+ * @var \App\ViewModels\DocumentViewModel $item
+ */
+?>
+        <!DOCTYPE html>
 <html>
-<head runat="server">
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
@@ -23,11 +28,7 @@
     * limitations under the License.
     *
     -->
-    <title>ONLYOFFICE</title>
-    {{--    <link rel="icon"--}}
-    {{--          href="images/word.ico"--}}
-    {{--          type="image/x-icon"/>--}}
-    {{--    <link rel="stylesheet" type="text/css" href="http://localhost:8080/example/stylesheets/editor.css"/>--}}
+    <title>{{ $item->fileName }}</title>
     <style>
         html {
             height: 100%;

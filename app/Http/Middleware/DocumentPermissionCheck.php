@@ -58,7 +58,7 @@ class DocumentPermissionCheck
 	
 	private function hasPermission(UserModel $user, string $routeName): bool
 	{
-		if (in_array($routeName, ['document.index', 'document.create', 'document.upload', "document.uploadFile"])) {
+		if (in_array($routeName, ['document.index', 'document.create', 'document.store', 'document.upload', "document.uploadFile"])) {
 			return $user->hasAnyPermission([
 				'document.view',
 				"document.create",

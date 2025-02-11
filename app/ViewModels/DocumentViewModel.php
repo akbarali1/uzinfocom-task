@@ -224,16 +224,16 @@ class DocumentViewModel extends BaseViewModel
 	
 	public function setViewConfig(): static
 	{
-		$directUrl   = str_replace(config('office.public_url_office'), config('office.local_url_office'), route('document.download', ['documentId' => $document->id]));
-		$callbackUrl = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $document->id]));
+		$directUrl   = str_replace(config('office.public_url_office'), config('office.local_url_office'), route('document.download', ['documentId' => $this->id]));
+		$callbackUrl = str_replace(config('office.public_url'), config('office.local_url'), route('document.callback', ['documentId' => $this->id]));
 		$config      = [
 			"type"         => request()->get("type", "desktop"),
-			"documentType" => $document->documentType,
+			"documentType" => $this->_data->documentType,
 			"document"     => [
-				"title"       => $document->fileName,
+				"title"       => $this->_data->fileName,
 				"url"         => $directUrl,
-				"fileType"    => $document->fileType,
-				"key"         => $document->key.time(),
+				"fileType"    => $this->_data->fileType,
+				"key"         => $this->_data->key.time(),
 				"info"        => [
 					"owner"    => $this->_data->user->name ?? "Unknown",
 					"uploaded" => $this->_data->createdAt->format('d.m.Y'),

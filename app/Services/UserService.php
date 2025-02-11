@@ -34,7 +34,7 @@ final class UserService
 	 */
 	public function paginate(int $page = 1, int $limit = 15, ?iterable $filters = null): DataObjectCollection
 	{
-		$model = UserModel::applyEloquentFilters($filters, ['roles'])->latest();
+		$model = UserModel::applyEloquentFilters($filters, ['roles'])->latest('users.id');
 		$model->select(['users.*']);
 		
 		$totalCount = $model->count();
