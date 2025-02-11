@@ -8,12 +8,8 @@
         data-template="vertical-menu-template-free">
 <head>
     <meta charset="utf-8"/>
-    <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>Login Page</title>
-
     <meta name="description" content=""/>
 
     <!-- Favicon -->
@@ -45,11 +41,15 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../assets/js/config.js"></script>
+    @if(config('app.env') === 'development')
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css"/>
+    @endif
 </head>
-
 <body>
+@if(config('app.env') === 'development')
+    <a class="github-fork-ribbon" target="_blank" href="https://github.com/akbarali1/uzinfocom-task" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+@endif
 <!-- Content -->
-
 <div class="container-xxl">
     <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner">
