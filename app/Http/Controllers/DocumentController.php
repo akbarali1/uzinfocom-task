@@ -3,17 +3,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use Akbarali\ActionData\ActionDataException;
 use Akbarali\ViewModel\PaginationViewModel;
 use App\ActionData\StoreDocumentActionData;
 use App\ActionData\UploadFileActionData;
-use App\DataObjects\DocumentDataObject;
 use App\Exceptions\DocumentException;
 use App\Filters\DateRangeFilter;
 use App\Filters\IdFilter;
 use App\Filters\UserDocumentFilter;
 use App\Filters\UserFilter;
-use App\Models\DocumentModel;
 use App\Services\DocumentService;
 use App\Services\OnlyOfficeService;
 use App\ViewModels\DocumentViewModel;
@@ -22,7 +19,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 
 /**
  * Created by PhpStorm.
@@ -59,41 +55,23 @@ final class DocumentController extends Controller
 	}
 	
 	/**
-	 * @param  Request  $request
 	 * @return View
 	 */
-	public function create(Request $request): View
+	public function create(): View
 	{
-		$user = $request->user();
-		$file = public_path("/files/empty.docx");
-		/** @var DocumentModel $document */
-		$document = DocumentModel::query()->create([
-			'user_id'        => $user->id,
-			'title'          => 'new.docx',
-			"file_path"      => '',
-			"file_name"      => '',
-			"file_size"      => filesize($file),
-			"file_type"      => "docx",
-			"last_edited_at" => now(),
-		]);
+		return view('document.create');
+	}
+	
+	/**
+	 * @throws DocumentException
+	 */
+	public function createFile(StoreDocumentActionData $actionData): RedirectResponse
+	{
+		$data = $this->service->createFile($actionData);
 		
-		$path = storage_path('app/public/documents/word/user_'.$user->id.'/document_'.$document->id.'/');
-		if (!file_exists($path) && !mkdir($path, 0777, true) && !is_dir($path)) {
-			throw new \RuntimeException(sprintf('Directory "%s" was not created', $path));
-		}
+		//return DocumentViewModel::fromDataObject($data)->setCreateConfig()->toView('document.store');
 		
-		$fileName = $document->id.'_'.date('Y_m_d_H_i_s').'.docx';
-		if (!copy($file, $path.$fileName)) {
-			throw new \RuntimeException(sprintf('File "%s" was not created', $path));
-		}
-		
-		$document->update([
-			'file_path' => $path,
-			'file_name' => $fileName,
-			"key"       => OnlyOfficeService::generateRevisionId($path.$fileName),
-		]);
-		
-		return DocumentViewModel::fromDataObject(DocumentDataObject::fromModel($document))->setCreateConfig()->toView('document.store');
+		return to_route('document.edit', ['id' => $data->id]);
 	}
 	
 	/**
@@ -101,7 +79,7 @@ final class DocumentController extends Controller
 	 */
 	public function edit(int $id): View
 	{
-		$documentData = $this->service->getDocument($id);
+		$documentData = $this->service->getDocument($id, ['user']);
 		
 		return DocumentViewModel::fromDataObject($documentData)->setEditConfig()->toView('document.store');
 	}
@@ -111,27 +89,9 @@ final class DocumentController extends Controller
 	 */
 	public function view(int $id): View
 	{
-		$document = $this->service->getDocument($id);
+		$document = $this->service->getDocument($id, ['user']);
 		
 		return DocumentViewModel::fromDataObject($document)->setViewConfig()->toView('document.store');
-	}
-	
-	/**
-	 * @param  int      $id
-	 * @param  Request  $request
-	 * @throws ActionDataException
-	 * @throws ValidationException
-	 * @return RedirectResponse
-	 */
-	public function update(int $id, Request $request): RedirectResponse
-	{
-		$request->request->add([
-			'id'      => $id,
-			'user_id' => $request->user()->id,
-		]);
-		$this->service->store(StoreDocumentActionData::fromRequest($request));
-		
-		return to_route('user.index')->with('message', trans('all.updated'));
 	}
 	
 	/**

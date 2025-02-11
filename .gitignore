@@ -39,3 +39,4 @@ yarn-error.log
 /docker/DocumentServer/lib/*
 /docker/DocumentServer/logs/*
 /docker/pgdata/*
+/php_onlyoffice/storage/

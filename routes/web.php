@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
 			Route::get('/', 'index')->name('index');
 			Route::get('/create', 'create')->name('create');
 			Route::get('/upload', 'upload')->name('upload');
+			Route::post('/store', 'createFile')->name('store');
 			Route::post('/upload-file', 'uploadFile')->name('uploadFile');
 			Route::post('/{id}/rename', 'rename')->name('rename');
 			Route::get('/{id}/edit', 'edit')->name('edit');

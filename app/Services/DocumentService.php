@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Akbarali\DataObject\DataObjectCollection;
+use App\ActionData\StoreDocumentActionData;
 use App\ActionData\UploadFileActionData;
 use App\DataObjects\DocumentDataObject;
 use App\Exceptions\DocumentException;
@@ -309,6 +310,50 @@ final class DocumentService
 				$histData,
 			],
 		];
+	}
+	
+	/**
+	 * @throws DocumentException
+	 */
+	public function createFile(StoreDocumentActionData $actionData): DocumentDataObject
+	{
+		$file = match ($actionData->documentType) {
+			"word" => public_path("/files/empty.docx"),
+			"exel" => public_path("/files/empty.xlsx"),
+			"ppt"  => public_path("/files/empty.pptx"),
+			"pdf"  => public_path("/files/empty.pdf"),
+		};
+		/** @var DocumentModel $document */
+		$document = DocumentModel::query()->create([
+			'user_id'        => $actionData->getUser()->id,
+			'title'          => $actionData->title,
+			'description'    => $actionData->description,
+			"file_path"      => '',
+			"file_name"      => '',
+			"file_size"      => filesize($file),
+			"file_type"      => pathinfo($file, PATHINFO_EXTENSION),
+			"last_edited_at" => now(),
+		]);
+		
+		$path = storage_path('app/public/documents/word/user_'.$actionData->getUser()->id.'/document_'.$document->id.'/');
+		if (!file_exists($path) && !mkdir($path, 0777, true) && !is_dir($path)) {
+			throw DocumentException::fileUploadFailed(sprintf('File "%s" was not created', $path));
+		}
+		
+		$fileName = $actionData->title.'.'.$document->file_type;
+		if (!copy($file, $path.$fileName)) {
+			throw DocumentException::fileUploadFailed(sprintf('File "%s" was not created', $path));
+		}
+		
+		$document->update([
+			'file_path' => $path,
+			'file_name' => $fileName,
+			"key"       => OnlyOfficeService::generateRevisionId($path.$fileName),
+		]);
+		
+		$document->load('user');
+		
+		return DocumentDataObject::fromModel($document);
 	}
 	
 }
