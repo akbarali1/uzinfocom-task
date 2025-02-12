@@ -82,6 +82,7 @@ If everything went well, the site should be up and running at http://localhost:8
 5. https://api.onlyoffice.com/docs/Docs%20API/Usage%20API/Config/Events
 6. https://api.onlyoffice.com/docs/Docs%20API/Usage%20API/Config/Editor/
 7. https://github.com/ONLYOFFICE/document-server-integration/tree/master/web/documentserver-example/php
+8. https://api.onlyoffice.com/docs/Docs%20API/More%20Information/FAQ/Managing%20versions
 
 ## License
 

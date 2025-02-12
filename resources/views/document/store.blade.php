@@ -406,12 +406,10 @@
                 return
             }
             history = JSON.parse(req.response)
-            docEditor.refreshHistory(
-                {
-                    currentVersion: history[0].currentVersion,
-                    history       : history[0].history
-                }
-            )
+            docEditor.refreshHistory({
+                currentVersion: history[0].currentVersion,
+                history       : history[0].history
+            })
         }
     }
 
@@ -517,9 +515,9 @@
             "onRequestRestore"   : onRequestRestore,
             // "onRequestSaveAs"     : onRequestSaveAs,
 
+            "onRequestHistory"     : onRequestHistory,
             "onRequestHistoryClose": onRequestHistoryClose,
             "onRequestHistoryData" : onRequestHistoryData,
-            "onRequestHistory"     : onRequestHistory,
         };
 
         // {history}
